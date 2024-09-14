@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Checking for software update.</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+      background-color: green;
+      color: white;
+      text-align: center;
+      font-size: 48px;
+      font-family: 'Varela Round', sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: auto;
+    }
+
+    .bx {
+      font-size: 100px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    function getUpdateStatus() {
+        //Send a fetch to /update_check endpoint to check for updates.
+
+        //Response will be a JSON object with 'update_pending' key set to true or false.
+        fetch('/update_check', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                password: document.cookie.replace(/(?:(?:^|.*;\s*)doorlock-passcode\s*\=\s*([^;]*).*$)|^.*$/, "$1")
+            })
+        }).then(response => response.json())
+        .then(data => {
+            if (data.update_pending === true) {
+                console.log("Update available!");
+                window.location.href = '/software_update_recommended';
+            } else {
+                console.log("No update available.");
+                window.location.href = '/door_unlocked_static';
+            }
+        });
+    }
+  </script>
+  <div class="container">
+    <i class='bx bx-check-circle'></i>
+    <h1>Unlocking</h1>
+  </div>
+</body>
+</html>

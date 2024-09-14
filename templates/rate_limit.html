@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Slow down!</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+        background-color: #ff0000;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Varela Round', sans-serif;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: auto;
+      }
+      
+      .bx {
+        font-size: 100px;
+        color: white;
+      }
+      
+      input[type="password"] {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #333;
+        color: white;
+        margin-bottom: 10px;
+      }
+      
+      button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-x'></i>
+    <h1>Slow down!</h1>
+    <p>You're trying to unlock the door too quickly. Please wait a few seconds before trying again.</p>
+    <p>You'll need to close this page and tap your sticker again to continue.</p>
+  </div>
+  <script>
+    function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    document.getElementById('submit').addEventListener('click', function() {
+        setCookie('doorlock-passcode', document.getElementById('password').value, 365);
+        window.location.href = '/';
+    });
+    </script>
+</body>
+</html>

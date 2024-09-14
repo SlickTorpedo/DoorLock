@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Software update!</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+      background-color: #2196F3;
+      color: white;
+      text-align: center;
+      font-size: 48px;
+      font-family: 'Varela Round', sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: auto;
+    }
+
+    .bx {
+      font-size: 100px;
+      color: white;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        width: 80%;
+        height: 150px;
+        font-size: 2em;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-transfer'></i>
+    <h1 id="main_header">You have a pending software update.</h1>
+    <p id="subheader">You don't have to install this. But it's recommended.</p>
+    <button id="submit">Start</button>
+  </div>
+
+  <script>
+    function performUpdate() {
+        document.getElementById('main_header').innerText = "Updating...";
+        document.getElementById('subheader').innerText = "When your doorlock stops moving, the update is complete.";
+
+        //Send a fetch to /update endpoint to perform the update.
+        fetch('/update', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            password: document.cookie.replace(/(?:(?:^|.*;\s*)doorlock-passcode\s*\=\s*([^;]*).*$)|^.*$/, "$1")
+            })
+        })
+        .then(response => {
+            if (response.status !== 200) {
+              document.getElementById('main_header').innerText = "Error!";
+              document.getElementById('subheader').innerText = "We were unable to update your doorlock. Please try again later.";
+              document.getElementById('submit').style.display = 'none';
+            }
+        })
+        .catch(error => {
+            document.getElementById('main_header').innerText = "Error!";
+            document.getElementById('subheader').innerText = "We were unable to update your doorlock. Please try again later.";
+            document.getElementById('submit').style.display = 'none';
+        });
+        
+
+        //This will not return anything because the server will close the connection after the update is complete.
+    }
+
+    document.getElementById('submit').addEventListener('click', performUpdate);
+  </script>
+</body>
+</html>

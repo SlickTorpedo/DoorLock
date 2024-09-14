@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Unlocking Door</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+      background-color: green;
+      color: white;
+      text-align: center;
+      font-size: 48px;
+      font-family: 'Varela Round', sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: auto;
+    }
+
+    .bx {
+      font-size: 100px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    function getLockStatus() {
+      //Get the doorlock-passcode cookie and send it to /verify endpoint
+      fetch('/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          password: document.cookie.replace(/(?:(?:^|.*;\s*)doorlock-passcode\s*\=\s*([^;]*).*$)|^.*$/, "$1")
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          console.log("Door unlocking!");
+          setTimeout(() => {
+            window.location.href = '/software_update';
+          }, 1000);
+        } else if (data.status === 'fail') {
+          window.location.href = '/password';
+        } else if (data.status === 'rate_limit_exceeded') {
+          window.location.href = '/rate_limit';
+        } else {
+          window.location.href = '/error';
+        }
+      });
+    }
+
+    getLockStatus();
+  </script>
+  <div class="container">
+    <i class='bx bx-check-circle'></i>
+    <h1>Unlocking</h1>
+  </div>
+</body>
+</html>
