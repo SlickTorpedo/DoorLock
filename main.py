@@ -56,10 +56,9 @@ def software_update():
     """Renders the software update page."""
     return render_template('software_update.html')
 
-@app.route('/update_check')
+@app.route('/update_check', methods=['POST'])
 def update_check():
     """Checks for updates."""
-    #return json.dumps({'update_pending': False})
     if version_control.check_for_updates():
         return json.dumps({'update_pending': True})
     return json.dumps({'update_pending': False})
