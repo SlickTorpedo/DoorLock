@@ -49,6 +49,11 @@ def lock():
     door_pin_handler.lock_door()
     return render_template('locked.html')
 
+@app.route('/software_update')
+def software_update():
+    """Renders the software update page."""
+    return render_template('software_update.html')
+
 @app.route('/update_check')
 def update_check():
     """Checks for updates."""
