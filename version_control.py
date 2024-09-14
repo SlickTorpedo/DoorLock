@@ -44,8 +44,8 @@ class VersionControl:
             os.system(f'git clone {self.repo_url} updated_software')
             os.system('cp -r updated_software/* .')
             os.system('rm -rf updated_software')
-            print("Ending the program so the changes can take effect. Goodbye!")
-            exit()
+            print("Rebooting the systemd task... Goodbye!")
+            os.system('sudo systemctl restart webserver')
             return True
         except:
             return False
