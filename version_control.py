@@ -44,6 +44,9 @@ class VersionControl:
             os.system(f'git clone {self.repo_url} updated_software')
             os.system('cp -r updated_software/* .')
             os.system('rm -rf updated_software')
+            os.system('pip install -r requirements.txt --break-system-packages')
+            print("Ending the program so the changes can take effect. Goodbye!")
+            exit()
             return True
         except:
             return False
