@@ -50,7 +50,7 @@
   <script>
     function performUpdate() {
         document.getElementById('main_header').innerText = "Updating...";
-        document.getElementById('subheader').innerText = "When your doorlock stops moving, the update is complete.";
+        document.getElementById('subheader').innerText = "When your doorlock stops moving, the update is complete. If nothing happens after 30 seconds, try again later.";
 
         //Send a fetch to /update endpoint to perform the update.
         fetch('/update', {
@@ -62,21 +62,6 @@
             password: document.cookie.replace(/(?:(?:^|.*;\s*)doorlock-passcode\s*\=\s*([^;]*).*$)|^.*$/, "$1")
             })
         })
-        .then(response => {
-            if (response.status !== 200) {
-              document.getElementById('main_header').innerText = "Error!";
-              document.getElementById('subheader').innerText = "We were unable to update your doorlock. Please try again later.";
-              document.getElementById('submit').style.display = 'none';
-            }
-        })
-        .catch(error => {
-            document.getElementById('main_header').innerText = "Error!";
-            document.getElementById('subheader').innerText = "We were unable to update your doorlock. Please try again later.";
-            document.getElementById('submit').style.display = 'none';
-        });
-        
-
-        //This will not return anything because the server will close the connection after the update is complete.
     }
 
     document.getElementById('submit').addEventListener('click', performUpdate);
