@@ -19,6 +19,8 @@ last_verification_time = 0
 door_pin_handler = PinHandler()
 version_control = VersionControl()
 
+last_verification_times = {}  # Dictionary to track last verification time per IP
+
 def unlockDoor():
     door_pin_handler.unlock_door()
     return
@@ -65,10 +67,27 @@ def update_check():
 @app.route('/update', methods=['POST'])
 def update():
     """Updates the software."""
-    #return json.dumps({'status': 'success'})
-    if version_control.update():
-        return json.dumps({'status': 'success'})
-    return json.dumps({'status': 'fail'}), 400
+    
+    ip_address = request.remote_addr
+    current_time = time.time()
+
+    # Set the default last verification time if IP is new
+    if ip_address not in last_verification_times:
+        last_verification_times[ip_address] = 0
+
+    if current_time - last_verification_times[ip_address] < verification_rate_limit_per_second:
+        return json.dumps({'status': 'rate_limit_exceeded'})
+
+    password = request.json['password']
+
+    if password == master_password:
+        last_verification_times[ip_address] = current_time
+        if version_control.update():
+            return json.dumps({'status': 'success'})
+        return json.dumps({'status': 'fail'}), 400
+    else:
+        last_verification_times[ip_address] = current_time
+        return json.dumps({'status': 'fail'})
 
 @app.route('/door_unlocked_static')
 def door_unlocked_static():
@@ -80,8 +99,6 @@ def door_unlocked_static():
 def software_update_recommended():
     """Renders the software update recommended page."""
     return render_template('software_update_recommended.html')
-
-last_verification_times = {}  # Dictionary to track last verification time per IP
 
 @app.route('/verify', methods=['POST'])
 def verify():
