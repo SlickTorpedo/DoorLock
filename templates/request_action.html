@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Request Privacy / Quiet Time</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+      background-color: #2196F3;
+      color: white;
+      text-align: center;
+      font-size: 24px;
+      font-family: 'Varela Round', sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .bx {
+      font-size: 80px;
+      color: white;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin: 20px 0;
+    }
+
+    .form-group {
+      margin: 20px 0;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+
+    .form-group select, .form-group input {
+      font-size: 1.2em;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .form-group select {
+      width: 150px;
+    }
+
+    .form-group input {
+      width: 100px;
+    }
+
+    button {
+      padding: 15px 30px;
+      background-color: #A71D1D;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      font-size: 1.5em;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #C62828;
+    }
+
+    .active-times {
+      margin-top: 30px;
+    }
+
+    .active-times table {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      border-collapse: collapse;
+    }
+
+    .active-times th, .active-times td {
+      border: 1px solid white;
+      padding: 10px;
+    }
+
+    .active-times th {
+      background-color: #A71D1D;
+    }
+
+    .active-times td {
+      text-align: center;
+    }
+
+    .actions button {
+      margin: 5px;
+      padding: 5px 10px;
+      font-size: 1em;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .actions button.cancel {
+      background-color: #F44336;
+    }
+
+    .actions button:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-low-vision'></i>
+    <h1>Set Your Time</h1>
+    
+    <div class="form-group">
+      <label for="timeType">Select Time Type:</label>
+      <select id="timeType">
+        <option value="privacy">Privacy Time</option>
+        <option value="quiet">Quiet Time</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label for="duration">Duration:</label>
+      <input type="number" id="duration" min="1" value="1" /> 
+      <select id="durationType">
+        <option value="minutes">Minutes</option>
+        <option value="hours">Hours</option>
+      </select>
+    </div>
+    
+    <button id="submit">Submit Request</button>
+    
+    <div class="active-times">
+      <h2>Active Times</h2>
+      <table id="activeTimesTable">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>End Time</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Active times will be inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Function to fetch active times
+    async function fetchActiveTimes() {
+      try {
+        const response = await fetch('/getCurrentTimes');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        return data.activeTimes;
+      } catch (error) {
+        console.error('Error fetching active times:', error);
+      }
+    }
+
+    // Function to update the active times table
+    async function updateActiveTimesTable() {
+      const activeTimes = await fetchActiveTimes();
+      const tableBody = document.getElementById('activeTimesTable').getElementsByTagName('tbody')[0];
+      
+      // Clear the table
+      tableBody.innerHTML = '';
+
+      activeTimes.forEach((time) => {
+        const row = tableBody.insertRow();
+        row.insertCell().textContent = time.type;
+        row.insertCell().textContent = time.endTime;
+
+        const actionsCell = row.insertCell();
+        const extendButton = document.createElement('button');
+        extendButton.textContent = 'Extend';
+        extendButton.onclick = () => extendTime(time.id);
+        actionsCell.appendChild(extendButton);
+
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.className = 'cancel';
+        cancelButton.onclick = () => cancelTime(time.id);
+        actionsCell.appendChild(cancelButton);
+      });
+    }
+
+    // Extend time function
+    async function extendTime(id) {
+      const extension = prompt('Enter additional duration in minutes:');
+      if (extension) {
+        try {
+          const response = await fetch('/extendTime', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, extension: parseInt(extension, 10) }),
+          });
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          alert('Time extended successfully!');
+          updateActiveTimesTable();
+        } catch (error) {
+          console.error('Error extending time:', error);
+        }
+      }
+    }
+
+    // Cancel time function
+    async function cancelTime(id) {
+      try {
+        const response = await fetch('/cancelTime', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        });
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        alert('Time cancelled successfully!');
+        updateActiveTimesTable();
+      } catch (error) {
+        console.error('Error cancelling time:', error);
+      }
+    }
+
+    // Handle submit button click
+    document.getElementById('submit').addEventListener('click', () => {
+      const timeType = document.getElementById('timeType').value;
+      const duration = document.getElementById('duration').value;
+      const durationType = document.getElementById('durationType').value;
+      
+      let durationInMilliseconds;
+      if (durationType === 'minutes') {
+        durationInMilliseconds = duration * 60 * 1000;
+      } else if (durationType === 'hours') {
+        durationInMilliseconds = duration * 60 * 60 * 1000;
+      }
+
+      const endTime = new Date(new Date().getTime() + durationInMilliseconds);
+      const formattedEndTime = endTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      
+      alert(`You have requested ${timeType}. It will last until ${formattedEndTime}.`);
+
+      // Send request to set the time
+      fetch('/setTime', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: timeType, endTime: formattedEndTime }),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        updateActiveTimesTable();
+      })
+      .catch(error => console.error('Error setting time:', error));
+    });
+
+    // Initial update of active times table
+    updateActiveTimesTable();
+  </script>
+</body>
+</html>

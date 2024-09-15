@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your roomate has requested privacy.</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+      background-color: #2196F3;
+      color: white;
+      text-align: center;
+      font-size: 48px;
+      font-family: 'Varela Round', sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .bx {
+      font-size: 100px;
+      color: white;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #A71D1D;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        width: 80%;
+        height: 150px;
+        font-size: 2em;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-low-vision'></i>
+    <h1>Heads Up!</h1>
+    <p>Your roomate has requested some privacy until <span id="privacy_time"></span></p>
+    <button id="submit">Unlock Anyways</button>
+  </div>
+
+  <script>
+    const privacy_time = new Date(new Date().getTime() + 2*60*60*1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+    document.getElementById('privacy_time').innerText = privacy_time;
+
+
+    
+  </script>
+</body>
+</html>

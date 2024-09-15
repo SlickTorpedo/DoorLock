@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import json
 import time
 import os
 from dotenv import load_dotenv
 import threading
+from datetime import datetime, timedelta
 
 from door_controller import DoorController
 from version_control import VersionControl
@@ -22,6 +23,9 @@ version_control = VersionControl()
 log_handler = LogHandler()
 
 last_verification_times = {}  # Dictionary to track last verification time per IP
+
+# Store active time requests in memory
+active_times = []
 
 def unlockDoor():
     door_controller.unlock()
@@ -95,7 +99,6 @@ def update():
 @app.route('/door_unlocked_static')
 def door_unlocked_static():
     """Renders the door unlocked static page."""
-    #This is here because safari will reload the page again when you view all your tabs, and this causes the door to unlock in the background.
     return render_template('door_unlocked_static.html')
 
 @app.route('/software_update_recommended')
@@ -127,7 +130,7 @@ def verify():
         last_verification_times[ip_address] = current_time
         return json.dumps({'status': 'fail'})
 
-#Start the registrar server 
+# Start the registrar server 
 from registrar_server import RegistrarClient
 registrar = RegistrarClient()
 
@@ -145,6 +148,59 @@ registrar_thread.start()
 
 main_loop_door_controller = threading.Thread(target=door_controller.main_loop)
 main_loop_door_controller.start()
+
+@app.route('/setTime', methods=['POST'])
+def set_time():
+    """Sets a privacy or quiet time."""
+    data = request.json
+    time_type = data['type']
+    end_time = data['endTime']
+    end_time_dt = datetime.strptime(end_time, '%I:%M %p')
+    
+    # Adjust for today or tomorrow
+    now = datetime.now()
+    if end_time_dt < now:
+        end_time_dt += timedelta(days=1)
+    
+    active_times.append({
+        'id': len(active_times) + 1,  # Simple ID generation
+        'type': time_type,
+        'endTime': end_time_dt.strftime('%I:%M %p')
+    })
+    
+    return jsonify({'status': 'success'})
+
+@app.route('/getCurrentTimes', methods=['GET'])
+def get_current_times():
+    """Returns all active time requests."""
+    return jsonify({'activeTimes': active_times})
+
+@app.route('/extendTime', methods=['POST'])
+def extend_time():
+    """Extends the end time of an active time request."""
+    data = request.json
+    id = data['id']
+    extension = data['extension']
+    
+    for time_entry in active_times:
+        if time_entry['id'] == id:
+            end_time_dt = datetime.strptime(time_entry['endTime'], '%I:%M %p')
+            end_time_dt += timedelta(minutes=extension)
+            time_entry['endTime'] = end_time_dt.strftime('%I:%M %p')
+            return jsonify({'status': 'success'})
+    
+    return jsonify({'status': 'fail'}), 404
+
+@app.route('/cancelTime', methods=['POST'])
+def cancel_time():
+    """Cancels an active time request."""
+    data = request.json
+    id = data['id']
+    
+    global active_times
+    active_times = [time_entry for time_entry in active_times if time_entry['id'] != id]
+    
+    return jsonify({'status': 'success'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
