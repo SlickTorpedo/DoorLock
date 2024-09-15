@@ -10,9 +10,9 @@ read answer
 if [ "$answer" != "${answer#[Yy]}" ] ;then
     echo "Updating the device..."
     #Download the latest version of the firmware
-    git clone https://github.com/SlickTorpedo/DoorLock updated_software
-    cp -r updated_software/* .
-    rm -rf updated_software
+    git clone https://github.com/SlickTorpedo/DoorLock ../updated_software #Go back a directory because the script is in the scripts folder
+    cp -r ../updated_software/* .
+    rm -rf ../updated_software
     sudo systemctl restart webserver
     echo "Device updated successfully!"
 else
