@@ -135,6 +135,7 @@ class DoorController:
                 if filter_activated_counter >= 5 and filter_activated:
                     print("Deactivated filter")
                     filter_activated = False
+                    self.filter_activated_cache = False
                     filter_activated_counter = 0
                     sleep(5)
                     self.lock()
