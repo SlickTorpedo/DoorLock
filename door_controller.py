@@ -55,11 +55,11 @@ class DoorController:
     def lock(self):
         self.lockingServo.ChangeDutyCycle(1)
         sleep(0.8)
-        self.lockingServo.ChangeDutyCycle(6)
-        sleep(0.8)
-        self.lockingServo.ChangeDutyCycle(4)
+        self.lockingServo.ChangeDutyCycle(8)
         sleep(0.8)
         self.lockingServo.ChangeDutyCycle(6)
+        sleep(0.8)
+        self.lockingServo.ChangeDutyCycle(8)
         sleep(0.8)
         self.lockingServo.ChangeDutyCycle(1)
 
