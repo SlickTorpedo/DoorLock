@@ -1,5 +1,6 @@
 from time import sleep
 import time
+import threading
 
 import RPi.GPIO as GPIO 
 
@@ -26,6 +27,10 @@ class DoorController:
         self.calibration_count = 10
         self.calibration_average = 0
 
+        self.filter_activated_cache = False
+
+        self.runCalibration()
+
 
     def getDistance(self):
         GPIO.output(self.ULT_TRIGGER, True)
@@ -50,11 +55,11 @@ class DoorController:
     def lock(self):
         self.lockingServo.ChangeDutyCycle(1)
         sleep(0.8)
-        self.lockingServo.ChangeDutyCycle(8)
-        sleep(0.8)
         self.lockingServo.ChangeDutyCycle(6)
         sleep(0.8)
-        self.lockingServo.ChangeDutyCycle(8)
+        self.lockingServo.ChangeDutyCycle(4)
+        sleep(0.8)
+        self.lockingServo.ChangeDutyCycle(6)
         sleep(0.8)
         self.lockingServo.ChangeDutyCycle(1)
 
@@ -64,6 +69,16 @@ class DoorController:
         self.handleServo.ChangeDutyCycle(12)
         sleep(2.5)
         self.handleServo.ChangeDutyCycle(1)
+        threading.Thread(target=self.start_relock_timer).start()
+    
+    def start_relock_timer(self):
+        for x in range(8):
+            print("Relock in " + str(8 - x) + " seconds")
+            sleep(1)
+        print("Relock status: " + str(self.filter_activated_cache))
+        if not self.filter_activated_cache:
+            self.lock()
+        self.filter_activated_cache = False
 
     def runCalibration(self):
         calibration_values = []
@@ -87,16 +102,19 @@ class DoorController:
         sleep(1)
         self.unlock()
         sleep(1)
-        self.lock()
+
 
     def main_loop(self):
+        filter_activated_counter = 0
+        filter_activated = False
         while True:
             distance = self.getDistance()
             #print("Distance: " + str(distance))
-            if distance > self.calibration_average + 0.5 or distance < self.calibration_average - 0.5:
+            if distance > self.calibration_average + 5 or distance < self.calibration_average - 5:
                 print("Activated filter")
                 filter_activated = True
                 filter_activated_counter = 0
+                self.filter_activated_cache = True
             else:
                 filter_activated_counter += 1
                 if filter_activated_counter >= 5 and filter_activated:
