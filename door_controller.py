@@ -28,6 +28,7 @@ class DoorController:
         self.calibration_average = 0
 
         self.filter_activated_cache = False
+        #self.last_distance = 0
 
         self.runCalibration()
 
@@ -105,11 +106,25 @@ class DoorController:
 
 
     def main_loop(self):
+        print("Starting main loop")
+        time.sleep(1)
         filter_activated_counter = 0
         filter_activated = False
+        #self.last_distance = self.getDistance()
+        time.sleep(1)
         while True:
             distance = self.getDistance()
-            #print("Distance: " + str(distance))
+
+            
+            #Throw out impossible distances.
+            # if distance > self.last_distance + 50 or distance < self.last_distance - 50:
+            #     print("Throwing out distance: " + str(distance))
+            #     distance = self.last_distance
+            # else:
+            #     self.last_distance = distance
+            # #print("Distance: " + str(distance))
+
+
             if distance > self.calibration_average + 5 or distance < self.calibration_average - 5:
                 print("Activated filter")
                 filter_activated = True
@@ -123,7 +138,7 @@ class DoorController:
                     filter_activated_counter = 0
                     sleep(5)
                     self.lock()
-            sleep(0.1)
+            sleep(1)
 
     def setLockAngle(self, angle): #This is for DEBUG!
         self.lockingServo.ChangeDutyCycle(angle)
