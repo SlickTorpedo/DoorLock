@@ -97,11 +97,11 @@ class DoorController:
         print("Average: " + str(average))
         self.calibration_average = average
 
-        # print("Calibrating lock system...")
-        # self.lock()
-        # sleep(1)
-        # self.unlock()
-        # sleep(1)
+        print("Calibrating lock system...")
+        self.lock()
+        sleep(1)
+        self.unlock()
+        sleep(1)
 
 
     def main_loop(self):
