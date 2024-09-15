@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect
 import json
 import time
 import os
@@ -31,8 +31,27 @@ def unlockDoor():
     door_controller.unlock()
     return
 
+def lockDoor():
+    door_controller.lock()
+    return
+
 @app.route('/')
-def unlocking_door():
+def main_checker():
+    """Checks for times and renders the appropriate page."""
+    now = datetime.now()
+    for time_entry in active_times:
+        end_time = datetime.strptime(time_entry['endTime'], '%I:%M %p')
+        if now < end_time:
+            if time_entry['type'] == 'privacy':
+                return render_template('requesting_privacy.html')
+            elif time_entry['type'] == 'quiet':
+                return render_template('requesting_quiet.html')
+    
+    #Redirect to the unlocking door page if no active times
+    return redirect('/unlocking_door_page')
+
+@app.route('/unlocking_door_page')
+def unlocking_door_page():
     """Renders the unlocking door page."""
     return render_template('unlocking_door.html')
 
@@ -54,7 +73,7 @@ def error():
 @app.route('/lock')
 def lock():
     """Locks the door."""
-    door_controller.lock()
+    lockDoor()
     return render_template('locked.html')
 
 @app.route('/software_update')
@@ -201,6 +220,12 @@ def cancel_time():
     active_times = [time_entry for time_entry in active_times if time_entry['id'] != id]
     
     return jsonify({'status': 'success'})
+
+@app.route('/request_time')
+def request_time():
+    """Renders the request time page."""
+    return render_template('request_action.html')
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
