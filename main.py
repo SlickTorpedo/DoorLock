@@ -5,8 +5,9 @@ import os
 from dotenv import load_dotenv
 import threading
 
-from pin_handler import PinHandler
+from door_controller import DoorController
 from version_control import VersionControl
+from log import LogHandler
 
 load_dotenv()
 master_password = os.getenv('MASTER_PASSWORD')
@@ -16,13 +17,14 @@ app = Flask(__name__)
 verification_rate_limit_per_second = 1
 last_verification_time = 0
 
-door_pin_handler = PinHandler()
+door_controller = DoorController()
 version_control = VersionControl()
+log_handler = LogHandler()
 
 last_verification_times = {}  # Dictionary to track last verification time per IP
 
 def unlockDoor():
-    door_pin_handler.unlock_door()
+    door_controller.unlock()
     return
 
 @app.route('/')
@@ -48,7 +50,7 @@ def error():
 @app.route('/lock')
 def lock():
     """Locks the door."""
-    door_pin_handler.lock_door()
+    door_controller.lock()
     return render_template('locked.html')
 
 @app.route('/software_update')
@@ -81,8 +83,10 @@ def update():
 
     if password == master_password:
         last_verification_times[ip_address] = current_time
+        log_handler.log_message("Software update initiated")
         if version_control.update():
             return json.dumps({'status': 'success'})
+        log_handler.log_message("Software update failed")
         return json.dumps({'status': 'fail'}), 400
     else:
         last_verification_times[ip_address] = current_time
@@ -128,6 +132,9 @@ from registrar_server import RegistrarClient
 registrar = RegistrarClient()
 
 def start_registrar():
+    log_handler.log_message("Registrar server started")
+    log_handler.log_message("Device IP: " + registrar.get_ip())
+    log_handler.log_message("Device Serial: " + registrar.get_serial_number())
     while True:
         print("Task: Pushing IP to registrar server")
         print(registrar.push_to_registrar())
