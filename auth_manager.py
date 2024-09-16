@@ -1,13 +1,13 @@
 import os
 import json
-from dotenv import load_dotenv
+import dotenv
 
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.primitives import padding
-from cryptography.hazmat.backends import default_backend
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
 import base64
 
-load_dotenv()
+dotenv_file = dotenv.find_dotenv()
+dotenv.load_dotenv(dotenv_file)
 
 class AuthManager:
     def __init__(self):
@@ -26,6 +26,9 @@ class AuthManager:
         
         self.room_number = os.getenv('ROOM_NUMBER')
         self.users = os.getenv('USERS').split(',') if os.getenv('USERS') else []
+
+        print("Room number: " + self.room_number)
+        print("Users: " + str(self.users))
         # The number is the PIN while the string is the password
 
     def is_valid_password(self, pin, password):
@@ -34,20 +37,27 @@ class AuthManager:
             return self.passwords[pin] == password
         return False
     
-    def decrypt(self, encrypted_data, key, iv_base64):
+    def password_exists(self, password):
+        return password in self.passwords.values()
+    
+    def decrypt(self, encrypted_data, pin, iv_base64):
         """Decrypt the data using AES with the provided key and IV."""
-        print("Decrypting data...")
-        print("Key: " + str(key))
-        print("IV: " + str(iv_base64))
-        print("Encrypted data: " + str(encrypted_data))
+
+        # Decode key and IV from Base64
+        key = str(pin).encode('utf-8')  # Convert string to bytes
         iv = base64.b64decode(iv_base64)
         encrypted_data = base64.b64decode(encrypted_data)
-        cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
-        decryptor = cipher.decryptor()
-        decrypted_padded = decryptor.update(encrypted_data) + decryptor.finalize()
-        unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
-        decrypted_data = unpadder.update(decrypted_padded) + unpadder.finalize()
-        return decrypted_data.decode()
+
+        # Print lengths for debugging
+
+        # Create cipher object
+        cipher = AES.new(key, AES.MODE_CBC, iv)
+        
+        # Decrypt and unpad data
+        decrypted_data = unpad(cipher.decrypt(encrypted_data), AES.block_size)
+        
+        #print(f"Decrypted data: {decrypted_data.decode('utf-8')}")  # Decode bytes to string
+        return decrypted_data.decode('utf-8')
 
     def currentPassword(self, pin):
         return self.passwords.get(pin, None)
@@ -61,4 +71,5 @@ class AuthManager:
     def changePassword(self, pin, newPassword):
         self.passwords[pin] = newPassword
         print("Password changed for pin " + pin + " to " + newPassword)
+        dotenv.set_key(dotenv_file, 'PASSWORDS', json.dumps([self.passwords]))
         return self.passwords

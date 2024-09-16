@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, jsonify, redirect
 import json
 import time
-import os
-from dotenv import load_dotenv
 import threading
 from datetime import datetime, timedelta
 
@@ -10,9 +8,6 @@ from door_controller import DoorController
 from version_control import VersionControl
 from auth_manager import AuthManager
 from log import LogHandler
-
-load_dotenv()
-master_password = os.getenv('MASTER_PASSWORD')
 
 app = Flask(__name__)
 
@@ -155,15 +150,20 @@ def verify():
         return json.dumps({'status': 'fail'}), 403
 
     last_verification_times[ip_address] = current_time
-    t = threading.Thread(target=unlockDoor)
-    t.start()
+
+    data = request.json
+
+    if data['redirect'] == "ignore":
+        t = threading.Thread(target=unlockDoor)
+        t.start()
+        return json.dumps({'status': 'success'})
     return json.dumps({'status': 'success'})
 
 # Password protected function for checking passwords in cookies
 def check_password():
     """Helper function to check password from cookies."""
     cookie_password = request.cookies.get('doorlock-passcode')
-    return cookie_password == master_password
+    return auth_manager.password_exists(cookie_password)
 
 @app.route('/setTime', methods=['POST'])
 def set_time():
@@ -271,13 +271,12 @@ def change_password_action():
         encrypted_password = data.get('encryptedPassword')
         iv_base64 = data.get('iv')
 
-        if not all([encrypted_old_password, encrypted_password, iv_base64]):
-            return jsonify({'error': 'Missing data'}), 400
-
         pins = auth_manager.listPins() #this is a list of all the pins
         for current_pin in pins:
             # Convert PIN to key (ensure it's 16 bytes for AES-128)
-            key = (current_pin + '0000000000000000')[:16].encode('utf-8')
+            key = int((current_pin + '0000000000000000')[:16])
+
+            current_password = auth_manager.currentPassword(current_pin)
 
             # Decrypt passwords
             decrypted_old_password = auth_manager.decrypt(encrypted_old_password, key, iv_base64)
