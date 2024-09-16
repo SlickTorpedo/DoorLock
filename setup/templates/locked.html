@@ -68,30 +68,7 @@
       const password = document.getElementById('password').value;
       setCookie('debug-secret', password, 1);
 
-      fetch('/verify', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.status === 'success') {
-            document.getElementById('main_text').innerText = `One moment, redirecting...`;
-            setTimeout(() => {
-              window.location.href = '/';
-            }, 1000);
-          } else if (data.status === 'fail') {
-            document.getElementById('main_text').innerText = "Incorrect password. Please try again.";
-            setTimeout(() => {
-              document.getElementById('main_text').innerText = "To unlock this door, you'll need to provide a password.";
-            }, 1000);
-          } else if (data.status === 'rate_limit_exceeded') {
-            window.location.href = '/rate_limit';
-          } else {
-            window.location.href = '/error';
-          }
-        });
+      window.location.href = '/';
     });
     </script>
 </body>

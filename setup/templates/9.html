@@ -97,7 +97,7 @@
 
       // Handle the confirm button click
       document.getElementById('confirm').addEventListener('click', function() {
-        setCookie(`roommate_${roommateNumber}`, 'true', 1);
+        setCookie(`roommate_${roommateNumber}`, 'done', 1);
 
         window.location.href = '/start'; // Adjust this URL as needed
       });

@@ -49,63 +49,63 @@ def setup_main():
 def setup_step1():
     """Renders the first setup page."""
     if check_password():
-        return render_template('setup1.html')
+        return render_template('1.html')
     return render_template('locked.html')
 
 @app.route('/2')
 def setup_step2():
     """Renders the second setup page."""
     if check_password():
-        return render_template('setup2.html')
+        return render_template('2.html')
     return render_template('locked.html')
 
 @app.route('/3')
 def setup_step3():
     """Renders the third setup page."""
     if check_password():
-        return render_template('setup3.html')
+        return render_template('3.html')
     return render_template('locked.html')
 
 @app.route('/4')
 def setup_step4():
     """Renders the fourth setup page."""
     if check_password():
-        return render_template('setup4.html')
+        return render_template('4.html')
     return render_template('locked.html')
 
 @app.route('/5')
 def setup_step5():
     """Renders the fifth setup page."""
     if check_password():
-        return render_template('setup5.html')
+        return render_template('5.html')
     return render_template('locked.html')
 
 @app.route('/6')
 def setup_step6():
     """Renders the sixth setup page."""
     if check_password():
-        return render_template('setup6.html')
+        return render_template('6.html')
     return render_template('locked.html')
 
 @app.route('/7')
 def setup_step7():
     """Renders the seventh setup page."""
     if check_password():
-        return render_template('setup7.html')
+        return render_template('7.html')
     return render_template('locked.html')
 
 @app.route('/8')
 def setup_step8():
     """Renders the eighth setup page."""
     if check_password():
-        return render_template('setup8.html')
+        return render_template('8.html')
     return render_template('locked.html')
 
 @app.route('/9')
 def setup_step9():
     """Renders the ninth setup page."""
     if check_password():
-        return render_template('setup9.html')
+        return render_template('9.html')
     return render_template('locked.html')
 
 @app.route('/calibrate')
@@ -145,14 +145,18 @@ def rating():
 
 @app.route('/start')
 def start():
-    """This is used for detecting if the information for both roomates has been captured. If it has, send to /calibrate, otherwise send to /1."""
+    """This is used for detecting if the information for both roommates has been captured. If it has, send to /calibrate, otherwise send to /1."""
     if check_password():
-        #look at the cookies, if they have roomate_1 set to true and roomate_2 set to true, then go to /calibrate
-        roomate_1 = request.cookies.get('roomate_1')
-        roomate_2 = request.cookies.get('roomate_2')
-        if roomate_1 == 'true' and roomate_2 == 'true':
+        #look at the cookies, if they have roommate_1 set to true and roommate_2 set to true, then go to /calibrate
+        roommate_1 = request.cookies.get('roommate_1')
+        roommate_2 = request.cookies.get('roommate_2')
+        if roommate_1 == 'done' and roommate_2 == 'done':
             return redirect('/calibrate')
-        return redirect('/1')
+        
+        #This system only works if there is 2 roommates!
+        if roommate_1 == 'done':
+            return redirect('/1?room=2')
+        return redirect('/1?room=1')
     
     return render_template('locked.html')
 
