@@ -118,6 +118,9 @@ class RegistrarClient:
         except Exception as e:
             print(Fore.RED + "Error: Unable to push IP to registrar")
             return f"Error: Unable to push IP to registrar ({str(e)})"
+        
+    def get_secret(self):
+        return self.secret
 
     def main(self):
         print(Fore.WHITE + "Serial Number: " + self.get_serial_number())

@@ -1,0 +1,11 @@
+These are SELF SIGNED! Using HTTPS will encrypt any traffic. Here's how they are generated:
+
+openssl genrsa -out /home/pi/Desktop/webserver/ssl_keys/key.pem 2048
+
+openssl req -new -key /home/pi/Desktop/webserver/ssl_keys/key.pem -out /home/pi/Desktop/webserver/ssl_keys/csr.pem \
+-subj "/C=US/ST=Arizona/L=Tucson/O=Not applicable/CN=localhost"
+
+openssl x509 -req -days 365 -in /home/pi/Desktop/webserver/ssl_keys/csr.pem -signkey /home/pi/Desktop/webserver/ssl_keys/key.pem -out /home/pi/Desktop/webserver/ssl_keys/cert.pem
+
+
+The auth manager creates and manages these.

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEV - Enter Device Secret</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+        background-color: #2196F3;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Varela Round', sans-serif;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      
+      .bx {
+        font-size: 100px;
+        color: white;
+      }
+      
+      input[type="password"] {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #333;
+        color: white;
+        margin-bottom: 10px;
+      }
+      
+      button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-lock-alt'></i>
+    <h1 id="main_text">This is a developer restricted page.</h1>
+    <p>Please enter the device secret to continue.</p>
+      <input id="password" type="password" placeholder="Enter password">
+      <button id="submit">Submit</button>
+  </div>
+  <script>
+    function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+    
+    document.getElementById('submit').addEventListener('click', function() {
+      const password = document.getElementById('password').value;
+      setCookie('debug-secret', password, 1);
+
+      fetch('/verify', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            document.getElementById('main_text').innerText = `One moment, redirecting...`;
+            setTimeout(() => {
+              window.location.href = '/home';
+            }, 1000);
+          } else if (data.status === 'fail') {
+            document.getElementById('main_text').innerText = "Incorrect password. Please try again.";
+            setTimeout(() => {
+              document.getElementById('main_text').innerText = "To unlock this door, you'll need to provide a password.";
+            }, 1000);
+          } else if (data.status === 'rate_limit_exceeded') {
+            window.location.href = '/rate_limit';
+          } else {
+            window.location.href = '/error';
+          }
+        });
+    });
+    </script>
+</body>
+</html>
