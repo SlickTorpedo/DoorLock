@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEV - Roommate Setup</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+        background-color: #2196F3;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Varela Round', sans-serif;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      
+      .bx {
+        font-size: 100px;
+        color: white;
+      }
+      
+      button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-user'></i>
+    <h1 id="main_text">Setup</h1>
+    <p id="info_text"></p>
+    <button id="start">Start</button>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the URL parameter 'room' and update the page content
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomNumber = urlParams.get('room');
+      
+      if (roomNumber) {
+        document.getElementById('info_text').innerText = `Setting up as roommate #${roomNumber}.`;
+      } else {
+        document.getElementById('info_text').innerText = `Please enter a roomate number to ?room`;
+      }
+      
+      document.getElementById('start').addEventListener('click', function() {
+        window.location.href = '/2?room=' + roomNumber;
+      });
+    });
+  </script>
+</body>
+</html>

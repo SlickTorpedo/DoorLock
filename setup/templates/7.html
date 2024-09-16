@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEV - Liability Agreement</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+        background-color: #2196F3;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Varela Round', sans-serif;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+      
+      .bx {
+        font-size: 100px;
+        color: white;
+      }
+      
+      button {
+        padding: 15px 30px;
+        font-size: 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        margin: 10px;
+      }
+      
+      .warning {
+        color: #ff4d4d;
+        margin-top: 20px;
+      }
+      
+      .content {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      #info_text {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-warning'></i>
+    <h1 id="main_text">Liability Agreement</h1>
+    <div class="content">
+      <p id="info_text">By using this device, you acknowledge that:</p>
+      <ul>
+        <li>You are responsible for ensuring that the device is always plugged in and operational. Failure to do so may result in being locked out of the system.</li>
+        <li>You are liable for any damage caused to the device. This includes physical damage as well as any issues arising from misuse.</li>
+        <li>Any loss of functionality or lockout caused by negligence or improper handling will not be covered by support. Charges may apply for repairs or replacements.</li>
+        <li>Software updates are added regularly. You will be prompted to update when you unlock the door. Failure to apply updates, which leads to security vulnerabilities or hacks, will be your responsibility.</li>
+      </ul>
+      <p id="warning_message" class="warning">Please read and understand the terms before proceeding.</p>
+      <button id="accept">I Accept</button>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the URL parameter 'room'
+      const urlParams = new URLSearchParams(window.location.search);
+      const roommateNumber = urlParams.get('room');
+
+      document.getElementById('accept').addEventListener('click', function() {
+        // Redirect to the next step, including the roommateNumber in the URL
+        window.location.href = "/8?room=" + roommateNumber;
+      });
+    });
+  </script>
+</body>
+</html>

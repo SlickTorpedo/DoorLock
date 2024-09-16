@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEV - Review Your Information</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+        background-color: #2196F3;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Varela Round', sans-serif;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+      
+      .bx {
+        font-size: 100px;
+        color: white;
+      }
+      
+      button {
+        padding: 15px 30px;
+        font-size: 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        margin: 10px;
+      }
+      
+      .content {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      
+      .info {
+        text-align: left;
+        margin: 20px 0;
+      }
+      
+      .contact-info {
+        margin-top: 20px;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-info-circle'></i>
+    <h1 id="main_text">Review Your Information</h1>
+    <div class="content">
+      <p id="info_text">Please review the information you provided below. If any details are incorrect, please contact us to make the necessary changes.</p>
+      <div class="info" id="info_display"></div>
+      <div class="contact-info">
+        <p>If you need to make changes, please let me know before proceeding.</p>
+      </div>
+      <button id="confirm">Confirm and Proceed</button>
+    </div>
+  </div>
+  <script>
+    function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Retrieve the roommateNumber from URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const roommateNumber = urlParams.get('room');
+      
+      // Retrieve data from localStorage
+      const localStorageData = JSON.parse(localStorage.getItem('userData')) || {};
+      const roommateData = localStorageData[`roommate_${roommateNumber}`] || {};
+
+      // Display the collected information
+      const infoDisplay = document.getElementById('info_display');
+      infoDisplay.innerHTML = `
+        <p><strong>Name:</strong> ${roommateData.name || 'N/A'}</p>
+        <p><strong>UA Login Username:</strong> ${roommateData.uaUsername || 'N/A'}</p>
+        <p><strong>PIN:</strong> ${roommateData.pin || 'N/A'}</p>
+        <p><strong>Password:</strong> ${roommateData.password || 'N/A'}</p>
+      `;
+
+      // Handle the confirm button click
+      document.getElementById('confirm').addEventListener('click', function() {
+        setCookie(`roommate_${roommateNumber}`, 'true', 1);
+
+        window.location.href = '/start'; // Adjust this URL as needed
+      });
+    });
+  </script>
+</body>
+</html>

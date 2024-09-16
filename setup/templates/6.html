@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEV - Set Your Password</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+        background-color: #2196F3;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Varela Round', sans-serif;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      
+      .bx {
+        font-size: 100px;
+        color: white;
+      }
+      
+      input[type="password"] {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #333;
+        color: white;
+        margin-bottom: 10px;
+        width: 250px; /* Adjust width as needed */
+        text-align: center;
+      }
+      
+      button {
+        padding: 15px 30px;
+        font-size: 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        margin: 10px;
+      }
+      
+      .error {
+        color: #ff4d4d;
+        margin-top: 10px;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-key'></i>
+    <h1 id="main_text">Set Your Password</h1>
+    <p id="info_text">Please create a password to unlock your door. (You can change this one for free anytime)</p>
+    <input type="password" id="password" placeholder="Enter Password">
+    <input type="password" id="confirm_password" placeholder="Confirm Password">
+    <button id="submit">Set Password</button>
+    <p id="error_message" class="error"></p>
+  </div>
+  <script>
+    document.getElementById('submit').addEventListener('click', function() {
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm_password').value;
+      const errorMessage = document.getElementById('error_message');
+
+      // Validate that passwords match and are not empty
+      if (password && confirmPassword) {
+        if (password === confirmPassword) {
+          // Retrieve existing data from localStorage
+          let localStorageData = JSON.parse(localStorage.getItem('userData')) || {};
+
+          // Update the password for the specific roommate
+          const urlParams = new URLSearchParams(window.location.search);
+          const roommateNumber = urlParams.get('room');
+          
+          if (roommateNumber) {
+            localStorageData[`roommate_${roommateNumber}`] = localStorageData[`roommate_${roommateNumber}`] || {};
+            localStorageData[`roommate_${roommateNumber}`].password = password;
+          }
+
+          // Store updated data in localStorage
+          localStorage.setItem('userData', JSON.stringify(localStorageData));
+
+          // Redirect to the acknowledgment page or next step
+          window.location.href = '/7?room=' + roommateNumber; // Adjust the URL as needed
+        } else {
+          // Display an error message if passwords do not match
+          errorMessage.innerText = "Passwords do not match. Please try again.";
+        }
+      } else {
+        // Display an error message if any field is empty
+        errorMessage.innerText = "Please fill in both password fields.";
+      }
+    });
+  </script>
+</body>
+</html>

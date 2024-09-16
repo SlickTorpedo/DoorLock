@@ -100,6 +100,10 @@ class AuthManager:
             f.write(datetime.now().isoformat())
         print("Timestamp updated.")
 
+    def cert_as_binary(self):
+        #Return the cert as a binary file-like objects
+        return open(self.cert_path, 'rb')
+
     def verify_ssl_keys(self):
         """Verify if SSL/TLS keys and certificate exist and are valid."""
         # Check if key, CSR, and certificate files exist

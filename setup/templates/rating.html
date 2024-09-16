@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEV - Feedback</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+        background-color: #2196F3;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Varela Round', sans-serif;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+      
+      .bx {
+        font-size: 100px;
+        color: white;
+      }
+      
+      button {
+        padding: 15px 30px;
+        font-size: 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        margin: 10px;
+      }
+      
+      .content {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      
+      .form-group {
+        text-align: left;
+        margin: 20px 0;
+      }
+      
+      .form-group input, .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0 15px;
+        border: none;
+        border-radius: 5px;
+      }
+      
+      .form-group textarea {
+        height: 100px;
+      }
+      
+      .rating {
+        display: flex;
+        justify-content: center;
+        margin: 10px 0;
+      }
+      
+      .rating label {
+        margin: 0 5px;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-star'></i>
+    <h1 id="main_text">Feedback</h1>
+    <div class="content">
+      <p id="info_text">We value your feedback! Please rate the following:</p>
+      
+      <!-- Rating for ease of purchase -->
+      <div class="form-group">
+        <label for="purchaseRating">Ease of Purchase:</label>
+        <div class="rating">
+          <label><input type="radio" name="purchaseRating" value="1"> 1</label>
+          <label><input type="radio" name="purchaseRating" value="2"> 2</label>
+          <label><input type="radio" name="purchaseRating" value="3"> 3</label>
+          <label><input type="radio" name="purchaseRating" value="4"> 4</label>
+          <label><input type="radio" name="purchaseRating" value="5"> 5</label>
+        </div>
+      </div>
+      
+      <!-- Rating for ease of setup -->
+      <div class="form-group">
+        <label for="setupRating">Ease of Setup:</label>
+        <div class="rating">
+          <label><input type="radio" name="setupRating" value="1"> 1</label>
+          <label><input type="radio" name="setupRating" value="2"> 2</label>
+          <label><input type="radio" name="setupRating" value="3"> 3</label>
+          <label><input type="radio" name="setupRating" value="4"> 4</label>
+          <label><input type="radio" name="setupRating" value="5"> 5</label>
+        </div>
+      </div>
+      
+      <!-- Comments Section -->
+      <div class="form-group">
+        <label for="comments">Any Comments:</label>
+        <textarea id="comments" placeholder="Your feedback here..."></textarea>
+      </div>
+      
+      <button id="submitFeedback">Submit Feedback</button>
+    </div>
+  </div>
+  <script>
+    document.getElementById('submitFeedback').addEventListener('click', function() {
+      // Gather feedback data
+      const purchaseRating = document.querySelector('input[name="purchaseRating"]:checked')?.value;
+      const setupRating = document.querySelector('input[name="setupRating"]:checked')?.value;
+      const comments = document.getElementById('comments').value;
+      
+      const feedbackData = {
+        purchaseRating,
+        setupRating,
+        comments
+      };
+      
+      // Simulate sending feedback data to the server
+      console.log('Feedback Submitted:', feedbackData);
+      
+      // For actual submission, you would send the data to your server
+      // Example: fetch('/submit-feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(feedbackData) });
+      
+      // Redirect to a thank you page or confirmation
+      window.location.href = '/done'; // Adjust this URL as needed
+    });
+  </script>
+</body>
+</html>

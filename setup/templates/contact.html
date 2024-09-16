@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEV - Contact Support</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+        background-color: #2196F3;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Varela Round', sans-serif;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+      
+      .bx {
+        font-size: 100px;
+        color: white;
+      }
+      
+      button {
+        padding: 15px 30px;
+        font-size: 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        margin: 10px;
+      }
+      
+      .content {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      
+      .instruction {
+        text-align: left;
+        margin: 20px 0;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-phone'></i>
+    <h1 id="main_text">Contact Support</h1>
+    <div class="content">
+      <p id="info_text">If you need to me for any reason, please follow these steps:</p>
+      <div class="instruction">
+        <p>1. Scan the NFC sticker located on the INSIDE of the door on your DoorLock.</p>
+        <p>2. Scroll to the bottom of the page where it says <strong>Get Support</strong>.</p>
+        <p>3. Please provide the serial number and any information, including photos that can be of use.</p>
+      </div>
+      <button id="continue">Continue</button>
+    </div>
+  </div>
+  <script>
+    document.getElementById('continue').addEventListener('click', function() {
+      // Redirect to the next step or the homepage
+      window.location.href = '/cert'; // Adjust this URL as needed
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEV - Warranty and Refund Policy</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+        background-color: #2196F3;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Varela Round', sans-serif;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+      
+      .bx {
+        font-size: 100px;
+        color: white;
+      }
+      
+      button {
+        padding: 15px 30px;
+        font-size: 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        margin: 10px;
+      }
+      
+      .content {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-gift'></i>
+    <h1 id="main_text">Warranty and Refund Policy</h1>
+    <div class="content">
+      <p id="info_text">We want you to be satisfied with your purchase. Here are our policies:</p>
+      <ul>
+        <li><strong>Refund Policy:</strong> You can receive a full refund within 1 week of your purchase if you are not satisfied with the product.</li>
+        <li><strong>Warranty:</strong> Our product comes with a 1-month warranty covering faulty parts. If you encounter any issues with the device that you believe are due to faulty parts, please reach out for assistance and potential repairs or replacements.</li>
+      </ul>
+      <p id="warning_message" class="warning">Please read and understand our policies before proceeding.</p>
+      <button id="accept">I Understand</button>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the URL parameter 'room'
+      const urlParams = new URLSearchParams(window.location.search);
+      const roommateNumber = urlParams.get('room');
+      
+      document.getElementById('accept').addEventListener('click', function() {
+        // Redirect to the next step, including the roommateNumber in the URL
+        window.location.href = "/9?room=" + roommateNumber;
+      });
+    });
+  </script>
+</body>
+</html>

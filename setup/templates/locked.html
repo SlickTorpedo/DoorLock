@@ -50,7 +50,7 @@
     <i class='bx bx-lock-alt'></i>
     <h1 id="main_text">This is a developer restricted page.</h1>
     <p>Please enter the device secret to continue.</p>
-      <input id="password" type="password" placeholder="Enter password">
+      <input id="password" type="password" placeholder="Enter Device Secret">
       <button id="submit">Submit</button>
   </div>
   <script>
@@ -79,7 +79,7 @@
           if (data.status === 'success') {
             document.getElementById('main_text').innerText = `One moment, redirecting...`;
             setTimeout(() => {
-              window.location.href = '/home';
+              window.location.href = '/';
             }, 1000);
           } else if (data.status === 'fail') {
             document.getElementById('main_text').innerText = "Incorrect password. Please try again.";

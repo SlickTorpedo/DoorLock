@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEV - Choose a PIN</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+        background-color: #2196F3;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Varela Round', sans-serif;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      
+      .bx {
+        font-size: 100px;
+        color: white;
+      }
+      
+      input[type="number"] {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #333;
+        color: white;
+        margin-bottom: 10px;
+        width: 100px; /* Adjust width as needed */
+        text-align: center;
+      }
+      
+      button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+      }
+
+      .error {
+        color: #ff4d4d;
+        margin-top: 10px;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-lock'></i>
+    <h1 id="main_text">Choose a PIN</h1>
+    <p id="info_text">Please choose a 4-digit PIN for your account.</p>
+    <input type="number" id="pin" min="0" max="9999" inputmode="numeric" pattern="[0-9]*" title="PIN" placeholder="PIN">
+    <button id="submit">Set PIN</button>
+    <p id="error_message" class="error"></p>
+  </div>
+  <script>
+    document.getElementById('submit').addEventListener('click', function() {
+      const pin = document.getElementById('pin').value;
+      const errorMessage = document.getElementById('error_message');
+
+      // Validate the PIN is exactly 4 digits
+      if (pin.length === 4 && !isNaN(pin)) {
+        // Retrieve existing data from localStorage
+        let localStorageData = JSON.parse(localStorage.getItem('userData')) || {};
+
+        // Update the PIN for the specific roommate
+        const urlParams = new URLSearchParams(window.location.search);
+        const roommateNumber = urlParams.get('room');
+        
+        if (roommateNumber) {
+          localStorageData[`roommate_${roommateNumber}`] = localStorageData[`roommate_${roommateNumber}`] || {};
+          localStorageData[`roommate_${roommateNumber}`].pin = pin;
+        }
+
+        // Store updated data in localStorage
+        localStorage.setItem('userData', JSON.stringify(localStorageData));
+
+        // Redirect to the next setup step or page
+        window.location.href = '/5?room=' + roommateNumber;
+      } else {
+        // Display an error message if the PIN is invalid
+        errorMessage.innerText = "Please choose a valid 4-digit PIN.";
+      }
+    });
+  </script>
+</body>
+</html>

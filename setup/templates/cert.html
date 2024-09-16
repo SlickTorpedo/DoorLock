@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEV - Download Certificate</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+        background-color: #2196F3;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Varela Round', sans-serif;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+      
+      .bx {
+        font-size: 100px;
+        color: white;
+      }
+      
+      button {
+        padding: 15px 30px;
+        font-size: 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        margin: 10px;
+      }
+      
+      .content {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      
+      .instruction {
+        text-align: left;
+        margin: 20px 0;
+      }
+      
+      .url {
+        font-size: 20px;
+        font-weight: bold;
+        margin: 20px 0;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-download'></i>
+    <h1 id="main_text">Download Certificate</h1>
+    <div class="content">
+      <p id="info_text">For security, you need to download and install a certificate. Follow the steps below:</p>
+      <div class="url" id="certificateUrl"></div>
+      <div class="instruction">
+        <p>1. Go to the URL above on your devices.</p>
+        <p>2. Settings -> General -> VPN & Device Management -> Select the certificate -> Trust</p>
+        <p>3. Settings -> General -> About -> Certificate Trust Settings -> Enable Full Trust for Root Certificates</p>
+      </div>
+      <button id="continue">Continue</button>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Replace {currentURL} with the actual URL of the current site
+      const currentURL = window.location.hostname;
+      const certificateUrl = `https://${currentURL}/c`;
+      
+      // Set the URL in the page
+      document.getElementById('certificateUrl').innerText = certificateUrl;
+      document.getElementById('certificateUrl').href = certificateUrl;
+      document.getElementById('certificateUrl').setAttribute('target', '_blank');
+      
+      // Continue button click event
+      document.getElementById('continue').addEventListener('click', function() {
+        // Redirect to the next step or homepage
+        window.location.href = '/rating'; // Adjust this URL as needed
+      });
+    });
+  </script>
+</body>
+</html>

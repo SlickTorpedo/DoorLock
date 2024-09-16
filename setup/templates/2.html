@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEV - Enter Your Name</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+        background-color: #2196F3;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Varela Round', sans-serif;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      
+      .bx {
+        font-size: 100px;
+        color: white;
+      }
+      
+      input[type="text"] {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #333;
+        color: white;
+        margin-bottom: 10px;
+      }
+      
+      button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-user'></i>
+    <h1 id="main_text">Enter Your Name</h1>
+    <p id="info_text"></p>
+    <input id="name" type="text" placeholder="Enter Your Name">
+    <button id="submit">Submit</button>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the URL parameter 'room' and update the page content
+      const urlParams = new URLSearchParams(window.location.search);
+      const roommateNumber = urlParams.get('room');
+      
+      document.getElementById('info_text').innerText = `Please enter your name.`;
+      
+      document.getElementById('submit').addEventListener('click', function() {
+        const name = document.getElementById('name').value;
+
+        // Retrieve existing data from localStorage
+        let localStorageData = JSON.parse(localStorage.getItem('userData')) || {};
+
+        // Update localStorage data
+        localStorageData[`roommate_${roommateNumber}`] = { name: name };
+
+        // Store updated data in localStorage
+        localStorage.setItem('userData', JSON.stringify(localStorageData));
+
+        // Redirect to the next setup step or page
+        window.location.href = '/3?room=' + roommateNumber;
+      });
+    });
+  </script>
+</body>
+</html>

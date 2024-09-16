@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEV - Acknowledgment</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+        background-color: #2196F3;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Varela Round', sans-serif;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      
+      .bx {
+        font-size: 100px;
+        color: white;
+      }
+      
+      button {
+        padding: 15px 30px;
+        font-size: 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        margin: 10px;
+      }
+      
+      .warning {
+        color: #ff4d4d;
+        margin-top: 20px;
+        font-weight: bold;
+        font-size: 1.5em;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-warning'></i>
+    <h1 id="main_text">Important Notice</h1>
+    <p id="info_text">Please keep your PIN confidential. Sharing your PIN with others may allow them to change your password, and a $25 fee will be charged to change / reset your PIN number.</p>
+    <p id="warning_message" class="warning">Do not share your PIN with anyone!</p>
+    <button id="understand">I Understand</button>
+    <button id="go_back">Go Back</button>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the URL parameter 'room'
+      const urlParams = new URLSearchParams(window.location.search);
+      const roommateNumber = urlParams.get('room');
+
+      document.getElementById('understand').addEventListener('click', function() {
+        window.location.href = "/6?room=" + roommateNumber;
+      });
+
+      document.getElementById('go_back').addEventListener('click', function() {
+        window.location.href = "/4?room=" + roommateNumber;
+      });
+    });
+  </script>
+</body>
+</html>

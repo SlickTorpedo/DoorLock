@@ -3,6 +3,7 @@ import json
 import time
 import threading
 from datetime import datetime, timedelta
+import os
 
 from door_controller import DoorController
 from version_control import VersionControl
@@ -23,6 +24,12 @@ last_verification_times = {}  # Dictionary to track last verification time per I
 
 # Store active time requests in memory
 active_times = []
+
+def runSetupServer():
+    os.system("python -m setup.main")
+
+setup_server_thread = threading.Thread(target=runSetupServer)
+setup_server_thread.start()
 
 def unlockDoor():
     door_controller.unlock()
