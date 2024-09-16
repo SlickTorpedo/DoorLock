@@ -11,9 +11,22 @@ load_dotenv()
 
 class AuthManager:
     def __init__(self):
-        self.passwords = json.loads(os.getenv('PASSWORDS'))
-        #Example: [ { "1234": "admin", "0001": "helloworld" } ]
-        #The number is the PIN while the string is the password
+        # Parse the environment variable as a JSON string and then load it as a Python object
+        passwords_json = os.getenv('PASSWORDS')
+        if passwords_json:
+            # Convert the JSON string into a Python list
+            passwords_list = json.loads(passwords_json)
+            if passwords_list and isinstance(passwords_list, list):
+                # Assume the list contains one dictionary
+                self.passwords = passwords_list[0] if isinstance(passwords_list[0], dict) else {}
+            else:
+                self.passwords = {}
+        else:
+            self.passwords = {}
+        
+        self.room_number = os.getenv('ROOM_NUMBER')
+        self.users = os.getenv('USERS').split(',') if os.getenv('USERS') else []
+        # The number is the PIN while the string is the password
 
     def is_valid_password(self, pin, password):
         """Checks if the provided password is correct."""
@@ -23,6 +36,10 @@ class AuthManager:
     
     def decrypt(self, encrypted_data, key, iv_base64):
         """Decrypt the data using AES with the provided key and IV."""
+        print("Decrypting data...")
+        print("Key: " + str(key))
+        print("IV: " + str(iv_base64))
+        print("Encrypted data: " + str(encrypted_data))
         iv = base64.b64decode(iv_base64)
         encrypted_data = base64.b64decode(encrypted_data)
         cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
@@ -33,7 +50,7 @@ class AuthManager:
         return decrypted_data.decode()
 
     def currentPassword(self, pin):
-        return self.passwords[pin]
+        return self.passwords.get(pin, None)
     
     def listPins(self):
         return self.passwords.keys()
@@ -43,4 +60,5 @@ class AuthManager:
     
     def changePassword(self, pin, newPassword):
         self.passwords[pin] = newPassword
+        print("Password changed for pin " + pin + " to " + newPassword)
         return self.passwords

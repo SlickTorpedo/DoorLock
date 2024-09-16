@@ -245,19 +245,19 @@ def support():
         return redirect('/password?redirect=support')
     return render_template('support.html')
 
-@app.route('/serial')
+@app.route('/serial', methods=['GET', 'POST'])
 def serial():
     """Returns the serial number of the device."""
     if not check_password():
         return jsonify({'status': 'fail', 'message': 'Invalid password'}), 403
-    return jsonify({'serial': registrar.get_serial_number()})
+    return jsonify({'serialNumber': registrar.get_serial_number()})
 
 @app.route('/change-password')
 def change_password():
     """Renders the change password page."""
     if not check_password():
         return redirect('/password?redirect=change-password')
-    return render_template('change_password.html')
+    return render_template('change-password.html')
 
 @app.route('/changepassword', methods=['POST'])
 def change_password_action():
