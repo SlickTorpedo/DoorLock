@@ -35,6 +35,8 @@ def lockDoor():
 @app.route('/')
 def main_checker():
     """Checks for times and renders the appropriate page."""
+    removeOverdueTimes()
+
     now = datetime.now()
     
     # Example: [{'id': 1, 'type': 'privacy', 'endTime': '05:07 PM'}]
@@ -168,6 +170,7 @@ def check_password():
 @app.route('/setTime', methods=['POST'])
 def set_time():
     """Sets a privacy or quiet time."""
+    global active_times
     if not check_password():
         return jsonify({'status': 'fail', 'message': 'Invalid password'}), 403
 
@@ -189,11 +192,24 @@ def set_time():
     
     return jsonify({'status': 'success'})
 
+def removeOverdueTimes():
+    """Removes any overdue time requests."""
+    global active_times
+    now = datetime.now()
+    for time_entry in active_times:
+        end_time_str = time_entry['endTime']
+        end_time = datetime.strptime(end_time_str, '%I:%M %p')
+        end_time = now.replace(hour=end_time.hour, minute=end_time.minute, second=0, microsecond=0)
+        if now > end_time:
+            active_times.remove(time_entry)
+
 @app.route('/getCurrentTimes', methods=['GET'])
 def get_current_times():
     """Returns all active time requests."""
     if not check_password():
         return jsonify({'status': 'fail', 'message': 'Invalid password'}), 403
+
+    removeOverdueTimes()
 
     return jsonify({'activeTimes': active_times})
 
