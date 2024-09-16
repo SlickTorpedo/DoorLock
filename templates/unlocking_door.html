@@ -29,13 +29,18 @@
 </head>
 <body>
   <script>
+    const requestBody = {
+      redirect: "ignore"
+    };
+
     function getLockStatus() {
       //Get the doorlock-passcode cookie and send it to /verify endpoint
       fetch('/verify', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify(requestBody)
       })
       .then(response => response.json())
       .then(data => {
