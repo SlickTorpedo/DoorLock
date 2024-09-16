@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 
 from door_controller import DoorController
 from version_control import VersionControl
+from auth_manager import AuthManager
 from log import LogHandler
 
 load_dotenv()
@@ -20,6 +21,7 @@ last_verification_time = 0
 
 door_controller = DoorController()
 version_control = VersionControl()
+auth_manager = AuthManager()
 log_handler = LogHandler()
 
 last_verification_times = {}  # Dictionary to track last verification time per IP
@@ -235,6 +237,70 @@ def request_time():
         return redirect('/password?redirect=request_time')
 
     return render_template('request_action.html')
+
+@app.route('/support')
+def support():
+    """Renders the support page."""
+    if not check_password():
+        return redirect('/password?redirect=support')
+    return render_template('support.html')
+
+@app.route('/serial')
+def serial():
+    """Returns the serial number of the device."""
+    if not check_password():
+        return jsonify({'status': 'fail', 'message': 'Invalid password'}), 403
+    return jsonify({'serial': registrar.get_serial_number()})
+
+@app.route('/change-password')
+def change_password():
+    """Renders the change password page."""
+    if not check_password():
+        return redirect('/password?redirect=change-password')
+    return render_template('change_password.html')
+
+@app.route('/changepassword', methods=['POST'])
+def change_password_action():
+    """Changes the password for the user. This is a POST request."""
+
+    try:
+        data = request.json
+
+        # Extract encrypted passwords and IV from the request
+        encrypted_old_password = data.get('encryptedOldPassword')
+        encrypted_password = data.get('encryptedPassword')
+        iv_base64 = data.get('iv')
+
+        if not all([encrypted_old_password, encrypted_password, iv_base64]):
+            return jsonify({'error': 'Missing data'}), 400
+
+        pins = auth_manager.listPins() #this is a list of all the pins
+        for current_pin in pins:
+            # Convert PIN to key (ensure it's 16 bytes for AES-128)
+            key = (current_pin + '0000000000000000')[:16].encode('utf-8')
+
+            # Decrypt passwords
+            decrypted_old_password = auth_manager.decrypt(encrypted_old_password, key, iv_base64)
+            decrypted_new_password = auth_manager.decrypt(encrypted_password, key, iv_base64)
+
+            if 'changePASS-' in decrypted_old_password and 'changePASS-' in decrypted_new_password:
+                # Here you should verify the old password and update to the new password
+                if decrypted_old_password == f'changePASS-{current_password}':
+                    # Normally you would update the password in your database
+                    current_password = decrypted_new_password.replace('changePASS-', '')
+
+                    auth_manager.changePassword(current_pin, current_password)
+
+                    return jsonify({'message': 'Password changed successfully!'}), 200
+                else:
+                    return jsonify({'error': 'Incorrect old password'}), 403
+                
+        return jsonify({'error': 'PIN not found'}), 404
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({'error': 'Internal Server Error'}), 500
+
 
 # Start the registrar server 
 from registrar_server import RegistrarClient

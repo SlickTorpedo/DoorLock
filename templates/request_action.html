@@ -114,6 +114,42 @@
     .actions button:hover {
       opacity: 0.9;
     }
+    
+    .additional-sections {
+      margin-top: 40px;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .additional-sections h2 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+    
+    .additional-sections .section {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Centering the content horizontally */
+      margin-bottom: 20px;
+      font-size: 1.2em;
+    }
+    
+    .additional-sections .section i {
+      font-size: 40px;
+      margin-right: 15px;
+      color: white; /* Ensure icon color is white */
+    }
+    
+    .additional-sections .section a {
+      color: white;
+      text-decoration: none;
+    }
+    
+    .additional-sections .section a:hover {
+      text-decoration: underline;
+    }
+    
   </style>
 </head>
 <body>
@@ -154,6 +190,20 @@
           <!-- Active times will be inserted here -->
         </tbody>
       </table>
+    </div>
+
+    <div style="margin-top: 50px;"></div>
+
+    <div class="additional-sections">
+      <div class="section">
+        <i class='bx bx-support'></i>
+        <a href="/support">Get Support</a>
+      </div>
+
+      <div class="section">
+        <i class='bx bx-lock'></i>
+        <a href="/change-password">Change Password</a>
+      </div>
     </div>
   </div>
 
