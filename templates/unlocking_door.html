@@ -35,10 +35,7 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          password: document.cookie.replace(/(?:(?:^|.*;\s*)doorlock-passcode\s*\=\s*([^;]*).*$)|^.*$/, "$1")
-        })
+        }
       })
       .then(response => response.json())
       .then(data => {

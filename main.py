@@ -39,15 +39,27 @@ def lockDoor():
 def main_checker():
     """Checks for times and renders the appropriate page."""
     now = datetime.now()
+    
+    # Example: [{'id': 1, 'type': 'privacy', 'endTime': '05:07 PM'}]
     for time_entry in active_times:
-        end_time = datetime.strptime(time_entry['endTime'], '%I:%M %p')
+        end_time_str = time_entry['endTime']
+        # Assuming end_time is today initially
+        end_time = datetime.strptime(end_time_str, '%I:%M %p')
+        
+        # Set the end_time to today's date
+        end_time = now.replace(hour=end_time.hour, minute=end_time.minute, second=0, microsecond=0)
+        
+        # If end_time is before now, assume it’s for the next day
+        if end_time < now:
+            end_time += timedelta(days=1)
+
         if now < end_time:
             if time_entry['type'] == 'privacy':
                 return render_template('requesting_privacy.html')
             elif time_entry['type'] == 'quiet':
                 return render_template('requesting_quiet.html')
     
-    #Redirect to the unlocking door page if no active times
+    # Redirect to the unlocking door page if no active times
     return redirect('/unlocking_door_page')
 
 @app.route('/unlocking_door_page')
@@ -102,18 +114,16 @@ def update():
     if current_time - last_verification_times[ip_address] < verification_rate_limit_per_second:
         return json.dumps({'status': 'rate_limit_exceeded'})
 
-    password = request.json['password']
+    # Check password from cookies
+    if not check_password():
+        return json.dumps({'status': 'fail'}), 403
 
-    if password == master_password:
-        last_verification_times[ip_address] = current_time
-        log_handler.log_message("Software update initiated")
-        if version_control.update():
-            return json.dumps({'status': 'success'})
-        log_handler.log_message("Software update failed")
-        return json.dumps({'status': 'fail'}), 400
-    else:
-        last_verification_times[ip_address] = current_time
-        return json.dumps({'status': 'fail'})
+    last_verification_times[ip_address] = current_time
+    log_handler.log_message("Software update initiated")
+    if version_control.update():
+        return json.dumps({'status': 'success'})
+    log_handler.log_message("Software update failed")
+    return json.dumps({'status': 'fail'}), 400
 
 @app.route('/door_unlocked_static')
 def door_unlocked_static():
@@ -138,39 +148,27 @@ def verify():
     if current_time - last_verification_times[ip_address] < verification_rate_limit_per_second:
         return json.dumps({'status': 'rate_limit_exceeded'})
 
-    password = request.json['password']
+    # Check password from cookies
+    if not check_password():
+        return json.dumps({'status': 'fail'}), 403
 
-    if password == master_password:
-        last_verification_times[ip_address] = current_time
-        t = threading.Thread(target=unlockDoor)
-        t.start()
-        return json.dumps({'status': 'success'})
-    else:
-        last_verification_times[ip_address] = current_time
-        return json.dumps({'status': 'fail'})
+    last_verification_times[ip_address] = current_time
+    t = threading.Thread(target=unlockDoor)
+    t.start()
+    return json.dumps({'status': 'success'})
 
-# Start the registrar server 
-from registrar_server import RegistrarClient
-registrar = RegistrarClient()
-
-def start_registrar():
-    log_handler.log_message("Registrar server started")
-    log_handler.log_message("Device IP: " + registrar.get_ip())
-    log_handler.log_message("Device Serial: " + registrar.get_serial_number())
-    while True:
-        print("Task: Pushing IP to registrar server")
-        print(registrar.push_to_registrar())
-        time.sleep(3600)
-
-registrar_thread = threading.Thread(target=start_registrar)
-registrar_thread.start()
-
-main_loop_door_controller = threading.Thread(target=door_controller.main_loop)
-main_loop_door_controller.start()
+# Password protected function for checking passwords in cookies
+def check_password():
+    """Helper function to check password from cookies."""
+    cookie_password = request.cookies.get('doorlock-passcode')
+    return cookie_password == master_password
 
 @app.route('/setTime', methods=['POST'])
 def set_time():
     """Sets a privacy or quiet time."""
+    if not check_password():
+        return jsonify({'status': 'fail', 'message': 'Invalid password'}), 403
+
     data = request.json
     time_type = data['type']
     end_time = data['endTime']
@@ -192,11 +190,17 @@ def set_time():
 @app.route('/getCurrentTimes', methods=['GET'])
 def get_current_times():
     """Returns all active time requests."""
+    if not check_password():
+        return jsonify({'status': 'fail', 'message': 'Invalid password'}), 403
+
     return jsonify({'activeTimes': active_times})
 
 @app.route('/extendTime', methods=['POST'])
 def extend_time():
     """Extends the end time of an active time request."""
+    if not check_password():
+        return jsonify({'status': 'fail', 'message': 'Invalid password'}), 403
+
     data = request.json
     id = data['id']
     extension = data['extension']
@@ -213,6 +217,9 @@ def extend_time():
 @app.route('/cancelTime', methods=['POST'])
 def cancel_time():
     """Cancels an active time request."""
+    if not check_password():
+        return jsonify({'status': 'fail', 'message': 'Invalid password'}), 403
+
     data = request.json
     id = data['id']
     
@@ -224,8 +231,29 @@ def cancel_time():
 @app.route('/request_time')
 def request_time():
     """Renders the request time page."""
+    if not check_password():
+        return redirect('/password?redirect=request_time')
+
     return render_template('request_action.html')
 
+# Start the registrar server 
+from registrar_server import RegistrarClient
+registrar = RegistrarClient()
+
+def start_registrar():
+    log_handler.log_message("Registrar server started")
+    log_handler.log_message("Device IP: " + registrar.get_ip())
+    log_handler.log_message("Device Serial: " + registrar.get_serial_number())
+    while True:
+        print("Task: Pushing IP to registrar server")
+        print(registrar.push_to_registrar())
+        time.sleep(3600)
+
+registrar_thread = threading.Thread(target=start_registrar)
+registrar_thread.start()
+
+main_loop_door_controller = threading.Thread(target=door_controller.main_loop)
+main_loop_door_controller.start()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
