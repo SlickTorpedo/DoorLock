@@ -150,6 +150,17 @@ def steps_complete():
         return render_template('steps_complete.html')
     return render_template('locked.html')
 
+@app.route('/submit-setup-data', methods=['POST'])
+def submit_setup_data():
+    """Handles the submission of setup data."""
+    if check_password():
+        data = request.json
+        print("Received data:", data)
+        if(auth_manager.set_submit_setup_data(data)):
+            return "Success"
+        return "Failed", 400
+    return "Unauthorized", 401
+
 @app.route('/start')
 def start():
     """This is used for detecting if the information for both roommates has been captured. If it has, send to /calibrate, otherwise send to /1."""

@@ -133,3 +133,51 @@ class AuthManager:
             print("SSL/TLS keys or certificate are missing. Generating now...")
             self.generate_ssl_keys()
             return False
+    
+    def getWifiCredentials(self):
+        #return the ssid and password as a list
+        return json.loads(os.getenv('UA_USERNAME')), json.loads(os.getenv('UA_PASSWORD'))
+        
+    def set_submit_setup_data(self, data):
+        #Example data: {'userData': '{"roomNumber":"415","roommate_1":{"name":"Philip","uaLogin":{"username":"Ehrbrightp","password":"admin"},"pin":"1234","password":"admin1"},"roommate_2":{"name":"Jeevan","uaLogin":{"username":"Jeevan1","password":"admin1"},"pin":"5678","password":"hello"}}'}
+        data = json.loads(data)
+        room_number = data['roomNumber'].strip()
+        self.room_number = room_number
+        self.users = [data['roommate_1']['name'], data['roommate_2']['name']]
+
+        # Extract the other information
+        roommate_1 = data['roommate_1']
+        roommate_2 = data['roommate_2']
+
+        roomate_1_pin = roommate_1['pin']
+        roomate_1_password = roommate_1['password']
+        roomate_1_ua_username = roommate_1['uaLogin']['username']
+        roomate_1_ua_password = roommate_1['uaLogin']['password']
+
+
+        roomate_2_pin = roommate_2['pin']
+        roomate_2_password = roommate_2['password']
+        roomate_2_ua_username = roommate_2['uaLogin']['username']
+        roomate_2_ua_password = roommate_2['uaLogin']['password']
+
+        # Update the .env file
+        current_env = os.environ.copy()
+        current_env['DEVICE_SECRET'] = os.getenv('DEVICE_SECRET')
+        current_env['ROOM_NUMBER'] = room_number
+        current_env['USERS'] = ','.join(self.users)
+        current_env['PASSWORDS'] = json.dumps([{roomate_1_pin: roomate_1_password, roomate_2_pin: roomate_2_password}])
+        current_env['UA_USERNAME'] = json.dumps([roomate_1_ua_username, roomate_2_ua_username])
+        current_env['UA_PASSWORD'] = json.dumps([roomate_1_ua_password, roomate_2_ua_password])
+
+        # Update the .env file
+        with open(dotenv_file, 'w') as f:
+            for key, value in current_env.items():
+                f.write(f"{key}={value}\n")
+
+        #Append complete setup to the .env file
+        with open(dotenv_file, 'a') as f:
+            f.write("SETUP_STATUS=complete\n")
+
+        return True
+
+
