@@ -17,7 +17,6 @@ app = Flask(__name__)
 verification_rate_limit_per_second = 1
 last_verification_time = 0
 
-door_controller = DoorController()
 version_control = VersionControl()
 auth_manager = AuthManager()
 log_handler = LogHandler()
@@ -48,6 +47,7 @@ if not auth_manager.setup_complete_status():
     print("File exited")
 
 else:
+    door_controller = DoorController()
 
     #Ensure SSL is valid
     auth_counter = 0

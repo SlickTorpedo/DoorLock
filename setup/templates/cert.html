@@ -74,7 +74,7 @@
     document.addEventListener('DOMContentLoaded', function() {
       // Replace {currentURL} with the actual URL of the current site
       const currentURL = window.location.hostname;
-      const certificateUrl = `https://${currentURL}/c`;
+      const certificateUrl = `https://${currentURL}:5000/c`;
       
       // Set the URL in the page
       document.getElementById('certificateUrl').innerText = certificateUrl;

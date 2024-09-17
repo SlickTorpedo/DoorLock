@@ -55,9 +55,11 @@ class VersionControl:
         Restarts the systemd task
         '''
         os.system('sudo systemctl restart webserver')
+        return True
 
     def restartDevice(self):
         '''
         Restarts the device
         '''
         os.system('sudo reboot -h now')
+        return True

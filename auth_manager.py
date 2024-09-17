@@ -34,9 +34,11 @@ class AuthManager:
         self.cert_path = '/home/pi/Desktop/webserver/ssl_keys/cert.pem'
         self.timestamp_path = '/home/pi/Desktop/webserver/ssl_keys/timestamp.txt'
 
-        print("Room number: " + self.room_number)
-        print("Users: " + str(self.users))
-        # The number is the PIN while the string is the password
+        try:
+            print("Room number: " + self.room_number)
+            print("Users: " + str(self.users))
+        except:
+            print("Error loading room number and users. The ENV file may be missing or not setup yet!")
 
     def is_valid_password(self, pin, password):
         """Checks if the provided password is correct."""
