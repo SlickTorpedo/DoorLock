@@ -20,6 +20,7 @@ import threading
 registrar_client = RegistrarClient()
 auth_manager = AuthManager()
 log_handler = LogHandler()
+version_controller = VersionControl()
 
 #Ensure SSL is valid
 auth_counter = 0
@@ -36,7 +37,7 @@ app = Flask(__name__)
 def restart_timeout():
     print("Restarting in 5 seconds")
     time.sleep(5)
-    VersionControl.restartDaemon()
+    version_controller.restartDaemon()
 
 def check_password():
     """Helper function to check password from cookies."""
@@ -182,6 +183,10 @@ def submit_setup_data():
         return "Failed", 400
     return "Unauthorized", 401
 
+@app.route('/serial')
+def get_serial():
+    """Returns the serial number of the device."""
+    return registrar_client.get_serial_number()
 
 @app.route('/start')
 def start():
