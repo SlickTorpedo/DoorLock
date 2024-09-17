@@ -52,6 +52,11 @@
     <button id="saveAndReboot">Save and Reboot</button>
   </div>
   <script>
+    function deleteCookie(name) {
+      document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
+
+
     document.getElementById('saveAndReboot').addEventListener('click', function() {
       // Gather all local storage data
       const localStorageData = {};
@@ -78,6 +83,11 @@
           console.log('Data successfully sent to the server.');
           // Redirect to the homepage or main page after successful data submission
           document.getElementById('info_text').innerText = 'Success!';
+          //delete the following cookies: debug-secret, roommate_1 and roommate_2
+          deleteCookie('debug-secret');
+          deleteCookie('roommate_1');
+          deleteCookie('roommate_2');
+          localStorage.clear();
         } else {
           console.error('Failed to send data to the server.');
           document.getElementById('info_text').innerText = 'An error occurred while saving your data. Please try again.';
