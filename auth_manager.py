@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 import base64
+import ast
+
 
 dotenv_file = dotenv.find_dotenv()
 dotenv.load_dotenv(dotenv_file)
@@ -138,6 +140,15 @@ class AuthManager:
     
 
     def attemptWifi(self):
+        username = ast.literal_eval(os.getenv('UA_USERNAME'))
+        password = ast.literal_eval(os.getenv('UA_PASSWORD'))
+
+        try:
+            subprocess.run(['sudo', 'nmcli', 'connection', 'reload'], check=True)
+            print("Network manager restarted.")
+        except subprocess.CalledProcessError:
+            print("Failed to restart network manager.")
+
         # Check if the file exists
         if os.path.exists('/etc/NetworkManager/system-connections/UAWiFi.nmconnection'):
             print("UA-WiFi exists. Attempting to ping google.com...")
@@ -148,52 +159,41 @@ class AuthManager:
                 return True
             except subprocess.CalledProcessError:
                 print("Ping failed. Attempting to connect to network manually...")
+                #Remove the file first
+                try:
+                    subprocess.run(['sudo', 'rm', '/etc/NetworkManager/system-connections/UAWiFi.nmconnection'], check=True)
+                    print("Profile removed.")
+                except subprocess.CalledProcessError:
+                    print("Failed to remove profile.")
 
         # Construct the configuration string
-        for username, password in zip(os.getenv('UA_USERNAME'), os.getenv('UA_PASSWORD')):
-            config = f"""[connection]
-id=UAWiFi
-uuid=0fee18d8-f12d-4224-a53c-66f7b94de057
-type=wifi
-interface-name=wlan0
+        for i in range(len(username)):
+            try:
+                uname = username[i]
+                pwd = password[i]
+            except:
+                print("Error loading username and password. Check if your .env file is setup correctly.")
+                return False
 
-[wifi]
-mode=infrastructure
-ssid=UAWiFi
-
-[wifi-security]
-auth-alg=open
-key-mgmt=wpa-eap
-
-[802-1x]
-eap=ttls;
-identity={username}
-password={password}
-phase2-auth=mschapv2
-
-[ipv4]
-method=auto
-
-[ipv6]
-addr-gen-mode=default
-method=auto
-
-[proxy]
-    """
+            try:
+                subprocess.run(['sudo', 'rm', '/etc/NetworkManager/system-connections/UAWiFi.nmconnection'], check=True)
+                print("Profile removed.")
+            except subprocess.CalledProcessError:
+                print("Failed to remove profile.")
 
             # Use echo and sudo to write to the file
             try:
-                subprocess.run(['sudo', 'bash', '-c', f'echo "{config}" > /etc/NetworkManager/system-connections/UAWiFi.nmconnection'], check=True)
-                print("Configuration written to /etc/NetworkManager/system-connections/UA-WiFi.")
-
-                # Restart the network manager
-                subprocess.run(['sudo', 'systemctl', 'restart', 'NetworkManager.service'], check=True)
+                subprocess.run(['sudo', 'nmcli', 'connection', 'reload'], check=True)
                 print("Network manager restarted.")
+
+                subprocess.run(['sudo', 'nmcli', 'connection', 'add', 'type', 'wifi', 'connection.id', 'UAWiFi', 'wifi.ssid', 'UAWiFi', 'wifi.mode', 'infrastructure', 'wifi-sec.key-mgmt', 'wpa-eap', '802-1x.eap', 'peap', '802-1x.identity', uname, '802-1x.phase2-auth', 'mschapv2', '802-1x.password', pwd], check=True)
+                print("Profile created.")
 
                 # Attempt to ping google.com again
                 try:
-                    subprocess.run(['ping', '-c', '1', 'google.com'], check=True)
+                    subprocess.run(['ping', '-c', '3', 'google.com'], check=True)
                     print("Ping successful.")
+                    print("Used the following credentials: " + uname + " / " + pwd)
                     return True
                 except subprocess.CalledProcessError:
                     print("Ping failed.")
