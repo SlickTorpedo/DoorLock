@@ -180,5 +180,8 @@ class AuthManager:
         print("Data written to .env file.")
 
         return True
+    
+    def setup_complete_status(self):
+        return os.getenv('SETUP_STATUS') == 'complete'
 
 
