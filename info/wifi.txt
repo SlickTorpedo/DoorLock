@@ -1,43 +1,5 @@
 The PI uses NetworkManager.
 
-The wifi file is stored at /etc/NetworkManager/system-connections/UAWiFi.nmconnection
+It runs a command to generate a file then reloads the NetworkManager config.
 
-Here's how validation goes.
-At startup, ping google.com
-If it fails with no internet, the PI will write to the nmconnection file.
-Then the PI will run sudo systemctl restart NetworkManager which will reconnect to the internet.
-
-If succesful, the PI will remember there was an error connecting to wifi and mention it when unlocking the door.
-
-If unsuccesful, the PI will host the webserver still but it will be unconnectable and I will have to come fix it for you (Plug the PI into my PC and manually configure the WiFi)
-
-Here's an example profile:
-
-[connection]
-id=UAWiFi
-uuid=0fee18d8-f12d-4224-a53c-66f7b94de057
-type=wifi
-interface-name=wlan0
-
-[wifi]
-mode=infrastructure
-ssid=UAWiFi
-
-[wifi-security]
-auth-alg=open
-key-mgmt=wpa-eap
-
-[802-1x]
-eap=ttls;
-identity=newusername
-password=newpassword
-phase2-auth=mschapv2
-
-[ipv4]
-method=auto
-
-[ipv6]
-addr-gen-mode=default
-method=auto
-
-[proxy]
+You can find all the code in auth_manager.py under the attemptWifi function.

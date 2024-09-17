@@ -153,10 +153,10 @@ class AuthManager:
 
         # Check if the file exists
         if os.path.exists('/etc/NetworkManager/system-connections/UAWiFi.nmconnection'):
-            print("UA-WiFi exists. Attempting to ping google.com...")
-            # Try and ping google.com
+            print("UA-WiFi exists. Attempting to ping 8.8.8.8...")
+            # Try and ping 8.8.8.8
             try:
-                subprocess.run(['ping', '-c', '5', 'google.com'], check=True)
+                subprocess.run(['ping', '-c', '5', '8.8.8.8'], check=True)
                 print("Ping successful.")
                 return True
             except subprocess.CalledProcessError:
@@ -193,9 +193,9 @@ class AuthManager:
 
                 time.sleep(10) #10 seconds to connect
 
-                # Attempt to ping google.com again
+                # Attempt to ping 8.8.8.8 again
                 try:
-                    subprocess.run(['ping', '-c', '3', 'google.com'], check=True)
+                    subprocess.run(['ping', '-c', '3', '8.8.8.8'], check=True)
                     print("Ping successful.")
                     print("Used the following credentials: " + uname + " / " + pwd)
                     return True
@@ -209,7 +209,7 @@ class AuthManager:
     
     def check_wifi_connection(self):
         try:
-            subprocess.run(['ping', '-c', '1', 'google.com'], check=True)
+            subprocess.run(['ping', '-c', '1', '8.8.8.8'], check=True)
             print("Ping successful.")
             return True
         except subprocess.CalledProcessError:
