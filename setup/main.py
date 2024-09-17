@@ -14,6 +14,8 @@ from auth_manager import AuthManager
 from log import LogHandler
 from version_control import VersionControl
 
+from door_controller_dev import DoorControllerDEV
+
 import time
 import threading
 
@@ -21,6 +23,8 @@ registrar_client = RegistrarClient()
 auth_manager = AuthManager()
 log_handler = LogHandler()
 version_controller = VersionControl()
+
+door_controller_dev = DoorControllerDEV()
 
 #Ensure SSL is valid
 auth_counter = 0
@@ -125,6 +129,29 @@ def calibrate():
     if check_password():
         return render_template('calibrate.html')
     return render_template('locked.html')
+
+@app.route('/lock')
+def lock():
+    """Locks the door."""
+    if check_password():
+        door_controller_dev.lock()
+        return "Locked"
+    return "Unauthorized", 401
+
+@app.route('/unlock')
+def unlock():
+    """Unlocks the door."""
+    if check_password():
+        door_controller_dev.unlock()
+        return "Unlocked"
+    return "Unauthorized", 401
+
+@app.route('/test-sensor')
+def test_sensor():
+    """Tests the ultrasonic sensor."""
+    if check_password():
+        return str(door_controller_dev.getDistance())
+    return "Unauthorized", 401
 
 @app.route('/cert')
 def cert():

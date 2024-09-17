@@ -28,9 +28,6 @@ class DoorController:
         self.calibration_average = 0
 
         self.filter_activated_cache = False
-        #self.last_distance = 0
-
-        self.runCalibration()
 
 
     def getDistance(self):
@@ -110,19 +107,9 @@ class DoorController:
         time.sleep(1)
         filter_activated_counter = 0
         filter_activated = False
-        #self.last_distance = self.getDistance()
         time.sleep(1)
         while True:
             distance = self.getDistance()
-
-            
-            #Throw out impossible distances.
-            # if distance > self.last_distance + 50 or distance < self.last_distance - 50:
-            #     print("Throwing out distance: " + str(distance))
-            #     distance = self.last_distance
-            # else:
-            #     self.last_distance = distance
-            # #print("Distance: " + str(distance))
 
 
             if distance > self.calibration_average + 5 or distance < self.calibration_average - 5:

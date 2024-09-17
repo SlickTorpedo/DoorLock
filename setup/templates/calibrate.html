@@ -76,7 +76,7 @@
         // Simulate locking the door
         statusElement.innerText = 'Locking the door...';
         // Here you would typically make a request to the server or device
-        // Example: fetch('/lock').then(response => response.text()).then(result => statusElement.innerText = result);
+        fetch('/lock').then(response => response.text()).then(result => statusElement.innerText = result);
       });
 
       // Unlock door button click event
@@ -84,7 +84,7 @@
         // Simulate unlocking the door
         statusElement.innerText = 'Unlocking the door...';
         // Here you would typically make a request to the server or device
-        // Example: fetch('/unlock').then(response => response.text()).then(result => statusElement.innerText = result);
+        fetch('/unlock').then(response => response.text()).then(result => statusElement.innerText = result);
       });
 
       // Test distance sensor button click event
@@ -92,7 +92,7 @@
         // Simulate testing the distance sensor
         statusElement.innerText = 'Testing distance sensor...';
         // Here you would typically make a request to the server or device
-        // Example: fetch('/test-sensor').then(response => response.text()).then(result => statusElement.innerText = result);
+        fetch('/test-sensor').then(response => response.text()).then(result => statusElement.innerText = result);
       });
 
       // Continue button click event
