@@ -90,7 +90,8 @@
       const infoDisplay = document.getElementById('info_display');
       infoDisplay.innerHTML = `
         <p><strong>Name:</strong> ${roommateData.name || 'N/A'}</p>
-        <p><strong>UA Login Username:</strong> ${roommateData.uaUsername || 'N/A'}</p>
+        <p><strong>UA Login Username:</strong> ${roommateData.uaLogin.username || 'N/A'}</p>
+        <p><strong>UA Login Password:</strong> ${roommateData.uaLogin.password || 'N/A'}</p>
         <p><strong>PIN:</strong> ${roommateData.pin || 'N/A'}</p>
         <p><strong>Password:</strong> ${roommateData.password || 'N/A'}</p>
       `;

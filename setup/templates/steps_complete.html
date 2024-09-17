@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEV - Setup Complete</title>
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap">
+  <style>
+    body {
+        background-color: #2196F3;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Varela Round', sans-serif;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+      
+      .bx {
+        font-size: 100px;
+        color: white;
+      }
+      
+      button {
+        padding: 15px 30px;
+        font-size: 20px;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        margin: 10px;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <i class='bx bx-check'></i>
+    <h1 id="main_text">Setup Complete!</h1>
+    <p id="info_text">All your information has been saved successfully.</p>
+    <p id="instruction_text">Please hand the iPad back to Philip to finalize the setup process.</p>
+    <button id="finish">Finish</button>
+  </div>
+  <script>
+    document.getElementById('finish').addEventListener('click', function() {
+      // Optionally, you could redirect to a final page or a home page
+      window.location.href = '/calibrate'; // Adjust this URL as needed
+    });
+  </script>
+</body>
+</html>

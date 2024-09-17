@@ -143,6 +143,13 @@ def rating():
         return render_template('rating.html')
     return render_template('locked.html')
 
+@app.route('/steps_complete')
+def steps_complete():
+    """Renders the steps_complete page."""
+    if check_password():
+        return render_template('steps_complete.html')
+    return render_template('locked.html')
+
 @app.route('/start')
 def start():
     """This is used for detecting if the information for both roommates has been captured. If it has, send to /calibrate, otherwise send to /1."""
@@ -151,7 +158,7 @@ def start():
         roommate_1 = request.cookies.get('roommate_1')
         roommate_2 = request.cookies.get('roommate_2')
         if roommate_1 == 'done' and roommate_2 == 'done':
-            return redirect('/calibrate')
+            return redirect('/steps_complete')
         
         #This system only works if there is 2 roommates!
         if roommate_1 == 'done':
