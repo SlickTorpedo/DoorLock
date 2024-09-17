@@ -29,6 +29,8 @@ class DoorController:
 
         self.filter_activated_cache = False
 
+        self.runCalibration()
+
 
     def getDistance(self):
         GPIO.output(self.ULT_TRIGGER, True)
