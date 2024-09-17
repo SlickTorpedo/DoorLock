@@ -7,6 +7,7 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 import base64
 import ast
+import time
 
 
 dotenv_file = dotenv.find_dotenv()
@@ -154,7 +155,7 @@ class AuthManager:
             print("UA-WiFi exists. Attempting to ping google.com...")
             # Try and ping google.com
             try:
-                subprocess.run(['ping', '-c', '1', 'google.com'], check=True)
+                subprocess.run(['ping', '-c', '5', 'google.com'], check=True)
                 print("Ping successful.")
                 return True
             except subprocess.CalledProcessError:
@@ -188,6 +189,8 @@ class AuthManager:
 
                 subprocess.run(['sudo', 'nmcli', 'connection', 'add', 'type', 'wifi', 'connection.id', 'UAWiFi', 'wifi.ssid', 'UAWiFi', 'wifi.mode', 'infrastructure', 'wifi-sec.key-mgmt', 'wpa-eap', '802-1x.eap', 'peap', '802-1x.identity', uname, '802-1x.phase2-auth', 'mschapv2', '802-1x.password', pwd], check=True)
                 print("Profile created.")
+
+                time.sleep(10) #10 seconds to connect
 
                 # Attempt to ping google.com again
                 try:
