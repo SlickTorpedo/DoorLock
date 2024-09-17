@@ -44,10 +44,8 @@ def runSetupServer():
     os.system("python -m setup.main")
 
 if not auth_manager.setup_complete_status():
-    setup_server_thread = threading.Thread(target=runSetupServer)
-    setup_server_thread.start()
-    print("Setup server started.")
-
+    runSetupServer()
+    print("File exited")
 
 else:
 
