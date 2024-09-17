@@ -15,6 +15,7 @@ class RegistrarClient:
     def __init__(self):
         self.secret = os.getenv('DEVICE_SECRET')  # Never share this! It is used to authenticate the device with the registrar server
         self.default_registrar = 'https://registrar.philipehrbright.com'
+        self.startup_url = 'https://registrar.philipehrbright.com/startup/'  # The PHP endpoint
         if self.secret is None:
             print(Fore.RED + "Error: DEVICE_SECRET not found in .env file.")
             self.secret = randomAlphaNumericString(16)
@@ -104,7 +105,9 @@ class RegistrarClient:
         if not self.check_registrar_security(registrar):
             print(Fore.RED + "Error: Registrar server is not secure.")
             return "Error: Registrar server is not secure!"
+
         try:
+            # Push IP to registrar
             registrar_post = requests.post(registrar, data={'ip': ip, 'serial': serial, 'secret': self.secret})
             if registrar_post.status_code == 200:
                 print(Fore.GREEN + "IP successfully pushed to registrar")
@@ -118,7 +121,29 @@ class RegistrarClient:
         except Exception as e:
             print(Fore.RED + "Error: Unable to push IP to registrar")
             return f"Error: Unable to push IP to registrar ({str(e)})"
-        
+
+    def send_to_php(self, ip, serial, secret):
+        '''
+        Sends IP, Serial, and Secret to PHP endpoint
+        '''
+        try:
+            response = requests.post(self.startup_url, data={'IP': ip, 'Serial': serial, 'Secret': secret})
+            if response.status_code == 200:
+                print(Fore.GREEN + "Information successfully sent to PHP endpoint")
+            else:
+                print(Fore.RED + "Failed to send information to PHP endpoint")
+                print(Fore.YELLOW + "PHP Response: " + response.text)
+        except Exception as e:
+            print(Fore.RED + f"Error: Unable to send information to PHP endpoint ({str(e)})")
+
+    def push_to_startup_registrar(self):
+        ip = self.get_ip()
+        serial = self.get_serial_number()
+        secret = self.get_secret()
+        self.send_to_php(ip, serial, secret)
+        print(Fore.GREEN + "IP, Serial, and Secret sent to PHP endpoint")
+        return True
+
     def get_secret(self):
         return self.secret
 
@@ -134,5 +159,10 @@ if __name__ == '__main__':
     run_test = input("Run test? (y/n): ")
     if run_test == "y":
         client.push_to_registrar()
+        # Call the `send_to_php` method if you need to test sending to the PHP endpoint separately
+        ip = client.get_ip()
+        serial = client.get_serial_number()
+        secret = client.get_secret()
+        client.send_to_php(ip, serial, secret)
     else:
         print(Fore.YELLOW + "Test skipped.")

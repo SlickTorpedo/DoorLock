@@ -43,6 +43,7 @@ def runSetupServer():
     os.system("python -m setup.main")
 
 if not auth_manager.setup_complete_status():
+    registrar.push_to_startup_registrar()
     runSetupServer()
     print("File exited")
 
