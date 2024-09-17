@@ -7,10 +7,15 @@
 from flask import Flask, render_template, request, send_file, redirect
 
 from colorama import Fore
+import json
 
 from registrar_server import RegistrarClient
 from auth_manager import AuthManager
 from log import LogHandler
+from version_control import VersionControl
+
+import time
+import threading
 
 registrar_client = RegistrarClient()
 auth_manager = AuthManager()
@@ -27,6 +32,11 @@ while not auth_manager.verify_ssl_keys():
 
 print(Fore.GREEN + "SSL keys verified.")
 app = Flask(__name__)
+
+def restart_timeout():
+    print("Restarting in 5 seconds")
+    time.sleep(5)
+    VersionControl.restartDaemon()
 
 def check_password():
     """Helper function to check password from cookies."""
@@ -150,16 +160,28 @@ def steps_complete():
         return render_template('steps_complete.html')
     return render_template('locked.html')
 
+
 @app.route('/submit-setup-data', methods=['POST'])
 def submit_setup_data():
     """Handles the submission of setup data."""
     if check_password():
         data = request.json
         print("Received data:", data)
-        if(auth_manager.set_submit_setup_data(data)):
-            return "Success"
+        
+        user_data_json = data.get('userData')
+        if user_data_json:
+            try:
+                # Parse userData JSON string to dictionary
+                user_data = json.loads(user_data_json)
+                if auth_manager.set_submit_setup_data(user_data):
+                    threading.Thread(target=restart_timeout).start()
+                    return "Success"
+            except json.JSONDecodeError:
+                return "Invalid JSON format", 400
+        
         return "Failed", 400
     return "Unauthorized", 401
+
 
 @app.route('/start')
 def start():

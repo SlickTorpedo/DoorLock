@@ -49,3 +49,15 @@ class VersionControl:
             return True
         except:
             return False
+        
+    def restartDaemon(self):
+        '''
+        Restarts the systemd task
+        '''
+        os.system('sudo systemctl restart webserver')
+
+    def restartDevice(self):
+        '''
+        Restarts the device
+        '''
+        os.system('sudo reboot -h now')

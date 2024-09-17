@@ -139,8 +139,7 @@ class AuthManager:
         return json.loads(os.getenv('UA_USERNAME')), json.loads(os.getenv('UA_PASSWORD'))
         
     def set_submit_setup_data(self, data):
-        #Example data: {'userData': '{"roomNumber":"415","roommate_1":{"name":"Philip","uaLogin":{"username":"Ehrbrightp","password":"admin"},"pin":"1234","password":"admin1"},"roommate_2":{"name":"Jeevan","uaLogin":{"username":"Jeevan1","password":"admin1"},"pin":"5678","password":"hello"}}'}
-        data = json.loads(data)
+    # Directly work with data as it's already a dictionary
         room_number = data['roomNumber'].strip()
         self.room_number = room_number
         self.users = [data['roommate_1']['name'], data['roommate_2']['name']]
@@ -161,7 +160,7 @@ class AuthManager:
         roomate_2_ua_password = roommate_2['uaLogin']['password']
 
         # Update the .env file
-        current_env = os.environ.copy()
+        current_env = {}
         current_env['DEVICE_SECRET'] = os.getenv('DEVICE_SECRET')
         current_env['ROOM_NUMBER'] = room_number
         current_env['USERS'] = ','.join(self.users)
@@ -177,6 +176,8 @@ class AuthManager:
         #Append complete setup to the .env file
         with open(dotenv_file, 'a') as f:
             f.write("SETUP_STATUS=complete\n")
+
+        print("Data written to .env file.")
 
         return True
 
