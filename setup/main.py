@@ -130,7 +130,7 @@ def calibrate():
         return render_template('calibrate.html')
     return render_template('locked.html')
 
-@app.route('/lock')
+@app.route('/lock', methods=['GET', 'POST'])
 def lock():
     """Locks the door."""
     if check_password():
@@ -138,7 +138,7 @@ def lock():
         return "Locked"
     return "Unauthorized", 401
 
-@app.route('/unlock')
+@app.route('/unlock', methods=['GET', 'POST'])
 def unlock():
     """Unlocks the door."""
     if check_password():
@@ -146,7 +146,7 @@ def unlock():
         return "Unlocked"
     return "Unauthorized", 401
 
-@app.route('/test-sensor')
+@app.route('/test-sensor', methods=['GET', 'POST'])
 def test_sensor():
     """Tests the ultrasonic sensor."""
     if check_password():
