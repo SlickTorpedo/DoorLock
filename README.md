@@ -24,4 +24,11 @@ Absolutely! You are encouraged to build DoorLock for personal use. However, sell
 ## How Much Is It?
 The cost of DoorLock is $70. If you and a roommate choose to share, the cost would be $35 each.
 
+## New Features
+### Privacy Time
+You can now request "privacy time" or "quiet time" with DoorLock. When you set a privacy period, your roommate will receive a warning saying, "Your roommate is requesting privacy until [time]." They can choose to either ignore the request or come back later. 
+
+### Quiet Time
+If you set "quiet time," a warning will be displayed when someone tries to enter your room, reminding them to please be quiet to avoid disturbing you.
+
 Feel free to reach out if you have any questions or need further information. Enjoy the convenience and flexibility of DoorLock!
