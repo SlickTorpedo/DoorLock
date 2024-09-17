@@ -15,6 +15,7 @@ dotenv.load_dotenv(dotenv_file)
 
 class AuthManager:
     def __init__(self):
+        self.wifi_failed_usernames = []
         # Parse the environment variable as a JSON string and then load it as a Python object
         passwords_json = os.getenv('PASSWORDS')
         if passwords_json:
@@ -199,14 +200,27 @@ class AuthManager:
                     print("Used the following credentials: " + uname + " / " + pwd)
                     return True
                 except subprocess.CalledProcessError:
+                    self.wifi_failed_usernames.append(uname)
                     print("Ping failed.")
             except subprocess.CalledProcessError:
                 print("Failed to write configuration or restart network manager.")
         
         return False
-
-                
-
+    
+    def check_wifi_connection(self):
+        try:
+            subprocess.run(['ping', '-c', '1', 'google.com'], check=True)
+            print("Ping successful.")
+            return True
+        except subprocess.CalledProcessError:
+            print("Ping failed. Attempting to connect to network manually...")
+            if(self.attemptWifi()):
+                return True
+            else:
+                return False
+    
+    def get_wifi_failed_usernames(self):
+        return self.wifi_failed_usernames
 
     def set_submit_setup_data(self, data):
     # Directly work with data as it's already a dictionary
@@ -253,7 +267,6 @@ class AuthManager:
     
     def setup_complete_status(self):
         return os.getenv('SETUP_STATUS') == 'complete'
-
 
 
 if __name__ == '__main__':

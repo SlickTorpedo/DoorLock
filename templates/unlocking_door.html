@@ -25,6 +25,18 @@
       font-size: 100px;
       color: white;
     }
+
+    button {
+      padding: 10px 20px;
+      background-color: #2196F3;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      width: 80%;
+      height: 150px;
+      font-size: 2em;
+    }
   </style>
 </head>
 <body>
@@ -59,11 +71,30 @@
       });
     }
 
-    getLockStatus();
+    const urlParams = new URLSearchParams(window.location.search);
+    const wifiWarning = urlParams.get('wifi_warning');
+    if (!wifiWarning) {
+      getLockStatus();
+    }
   </script>
   <div class="container">
-    <i class='bx bx-check-circle'></i>
-    <h1>Unlocking</h1>
+    <span id="icon"><i class='bx bx-check-circle'></i></span>
+    <h1 id="unlocking_element">Unlocking</h1>
+    <span id="wifi_warning"></span>
+    <button id="submit" style="display: none">Understood</button>
   </div>
+
+  <script>
+    if (wifiWarning) {
+      document.getElementById("icon").innerHTML = "<i class='bx bx-no-signal'></i>"
+      document.getElementById("unlocking_element").innerHTML = "Important!";
+      document.getElementById("wifi_warning").innerHTML = "<p>The following NETID appears to have been changed: " + wifiWarning + "</p><p>Your device will continue to work for a while, but you should contact support by scanning the sticker on the inside of your device ASAP.</p>";
+      document.getElementById("submit").style.display = "block";
+    }
+
+    document.getElementById("submit").addEventListener("click", function() {
+      getLockStatus();
+    });
+  </script>
 </body>
 </html>

@@ -39,6 +39,17 @@ def start_registrar():
         print("Task: Pushing IP to registrar server")
         print(registrar.push_to_registrar())
         time.sleep(3600)
+    
+def check_wifi_status():
+    while True:
+        if not auth_manager.check_wifi_connection():
+            print("Error: No WiFi connection")
+            log_handler.log("Error: No WiFi connection")
+            version_control.restartDevice()
+        time.sleep(60)
+
+wifi_thread = threading.Thread(target=check_wifi_status)
+wifi_thread.start()
 
 registrar_thread = threading.Thread(target=start_registrar)
 registrar_thread.start()
@@ -100,6 +111,10 @@ else:
                     return render_template('requesting_quiet.html')
         
         # Redirect to the unlocking door page if no active times
+        if auth_manager.get_wifi_failed_usernames():
+            if not check_password():
+                return redirect('/unlocking_door_page')
+            return redirect('/unlocking_door_page?wifi_warning=' + auth_manager.get_wifi_failed_usernames()[0])
         return redirect('/unlocking_door_page')
 
     @app.route('/unlocking_door_page')
