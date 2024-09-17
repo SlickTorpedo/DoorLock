@@ -136,10 +136,75 @@ class AuthManager:
             self.generate_ssl_keys()
             return False
     
-    def getWifiCredentials(self):
-        #return the ssid and password as a list
-        return json.loads(os.getenv('UA_USERNAME')), json.loads(os.getenv('UA_PASSWORD'))
+
+    def attemptWifi(self):
+        # Check if the file exists
+        if os.path.exists('/etc/NetworkManager/system-connections/UAWiFi.nmconnection'):
+            print("UA-WiFi exists. Attempting to ping google.com...")
+            # Try and ping google.com
+            try:
+                subprocess.run(['ping', '-c', '1', 'google.com'], check=True)
+                print("Ping successful.")
+                return True
+            except subprocess.CalledProcessError:
+                print("Ping failed. Attempting to connect to network manually...")
+
+        # Construct the configuration string
+        for username, password in zip(os.getenv('UA_USERNAME'), os.getenv('UA_PASSWORD')):
+            config = f"""[connection]
+id=UAWiFi
+uuid=0fee18d8-f12d-4224-a53c-66f7b94de057
+type=wifi
+interface-name=wlan0
+
+[wifi]
+mode=infrastructure
+ssid=UAWiFi
+
+[wifi-security]
+auth-alg=open
+key-mgmt=wpa-eap
+
+[802-1x]
+eap=ttls;
+identity={username}
+password={password}
+phase2-auth=mschapv2
+
+[ipv4]
+method=auto
+
+[ipv6]
+addr-gen-mode=default
+method=auto
+
+[proxy]
+    """
+
+            # Use echo and sudo to write to the file
+            try:
+                subprocess.run(['sudo', 'bash', '-c', f'echo "{config}" > /etc/NetworkManager/system-connections/UAWiFi.nmconnection'], check=True)
+                print("Configuration written to /etc/NetworkManager/system-connections/UA-WiFi.")
+
+                # Restart the network manager
+                subprocess.run(['sudo', 'systemctl', 'restart', 'NetworkManager.service'], check=True)
+                print("Network manager restarted.")
+
+                # Attempt to ping google.com again
+                try:
+                    subprocess.run(['ping', '-c', '1', 'google.com'], check=True)
+                    print("Ping successful.")
+                    return True
+                except subprocess.CalledProcessError:
+                    print("Ping failed.")
+            except subprocess.CalledProcessError:
+                print("Failed to write configuration or restart network manager.")
         
+        return False
+
+                
+
+
     def set_submit_setup_data(self, data):
     # Directly work with data as it's already a dictionary
         room_number = data['roomNumber'].strip()
@@ -187,3 +252,14 @@ class AuthManager:
         return os.getenv('SETUP_STATUS') == 'complete'
 
 
+
+if __name__ == '__main__':
+    auth_manager = AuthManager()
+    print(auth_manager.room_number)
+    print("Attempting to connect to UA-WiFi...")
+    print(auth_manager.attemptWifi())
+    print("Setup complete status: " + str(auth_manager.setup_complete_status()))
+    print("Users: " + str(auth_manager.users))
+    print("Passwords: " + str(auth_manager.passwords))
+    print("Room number: " + str(auth_manager.room_number))
+    print("SSL keys verified: " + str(auth_manager.verify_ssl_keys()))

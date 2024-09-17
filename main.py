@@ -8,6 +8,11 @@ import os
 from door_controller import DoorController
 from version_control import VersionControl
 from auth_manager import AuthManager
+auth_manager = AuthManager()
+
+print("attempting to connect to network")
+print(auth_manager.attemptWifi())
+
 from log import LogHandler
 
 from registrar_server import RegistrarClient
@@ -18,7 +23,6 @@ verification_rate_limit_per_second = 1
 last_verification_time = 0
 
 version_control = VersionControl()
-auth_manager = AuthManager()
 log_handler = LogHandler()
 registrar = RegistrarClient()
 
