@@ -7,5 +7,6 @@ openssl req -new -key /home/pi/Desktop/webserver/ssl_keys/key.pem -out /home/pi/
 
 openssl x509 -req -days 365 -in /home/pi/Desktop/webserver/ssl_keys/csr.pem -signkey /home/pi/Desktop/webserver/ssl_keys/key.pem -out /home/pi/Desktop/webserver/ssl_keys/cert.pem
 
-
 The auth manager creates and manages these.
+
+Update: These SSL keys are no longer used. We have switched to a tunnel system to allow for more compatibility and non self signed certificates.
