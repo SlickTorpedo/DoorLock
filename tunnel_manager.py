@@ -7,7 +7,7 @@ import json
 
 registrar_client = RegistrarClient()
 
-class TunnelDownloader:
+class Tunnel:
     def __init__(self):
         self.download_url = 'https://philipehrbright.tech/download'
         self.credentials = {
@@ -112,5 +112,5 @@ class TunnelDownloader:
             return False
 
 if __name__ == '__main__':
-    tunnel_downloader = TunnelDownloader()
+    tunnel_downloader = Tunnel()
     tunnel_downloader.installAndRunDocker(tunnel_downloader.download())

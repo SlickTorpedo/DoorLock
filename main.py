@@ -5,6 +5,11 @@ import threading
 from datetime import datetime, timedelta
 import os
 
+from tunnel_manager import Tunnel
+
+tunnel = Tunnel()
+print("Tunnel Status: " + str(tunnel.installAndRunDocker(tunnel.download())))
+
 from door_controller import DoorController
 from version_control import VersionControl
 from auth_manager import AuthManager

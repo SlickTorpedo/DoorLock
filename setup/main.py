@@ -14,6 +14,11 @@ from auth_manager import AuthManager
 from log import LogHandler
 from version_control import VersionControl
 
+from tunnel_manager import Tunnel
+
+tunnel = Tunnel()
+print("Tunnel Status: " + str(tunnel.installAndRunDocker(tunnel.download())))
+
 from door_controller_dev import DoorControllerDEV
 
 import time

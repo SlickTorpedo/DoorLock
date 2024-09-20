@@ -111,34 +111,36 @@ class AuthManager:
         return open(self.cert_path, 'rb')
 
     def verify_ssl_keys(self):
-        """Verify if SSL/TLS keys and certificate exist and are valid."""
-        # Check if key, CSR, and certificate files exist
-        if (os.path.isfile(self.key_path) and 
-            os.path.isfile(self.csr_path) and 
-            os.path.isfile(self.cert_path)):
+        #Method has been deprecated. It's still here for reference and if for some reason we want to revert back to it.
+        return True
+        # """Verify if SSL/TLS keys and certificate exist and are valid."""
+        # # Check if key, CSR, and certificate files exist
+        # if (os.path.isfile(self.key_path) and 
+        #     os.path.isfile(self.csr_path) and 
+        #     os.path.isfile(self.cert_path)):
 
-            # Check the timestamp file
-            if os.path.isfile(self.timestamp_path):
-                with open(self.timestamp_path, 'r') as f:
-                    timestamp = f.read().strip()
-                last_generated = datetime.fromisoformat(timestamp)
-                current_time = datetime.now()
-                # Check if certificate is older than 365 days
-                if current_time - last_generated > timedelta(days=365):
-                    print("Certificate expired. Generating new SSL/TLS keys and certificate...")
-                    self.generate_ssl_keys()
-                    return False
-                else:
-                    print("SSL/TLS keys and certificate are up to date.")
-                    return True
-            else:
-                print("Timestamp file missing. Generating new SSL/TLS keys and certificate...")
-                self.generate_ssl_keys()
-                return False
-        else:
-            print("SSL/TLS keys or certificate are missing. Generating now...")
-            self.generate_ssl_keys()
-            return False
+        #     # Check the timestamp file
+        #     if os.path.isfile(self.timestamp_path):
+        #         with open(self.timestamp_path, 'r') as f:
+        #             timestamp = f.read().strip()
+        #         last_generated = datetime.fromisoformat(timestamp)
+        #         current_time = datetime.now()
+        #         # Check if certificate is older than 365 days
+        #         if current_time - last_generated > timedelta(days=365):
+        #             print("Certificate expired. Generating new SSL/TLS keys and certificate...")
+        #             self.generate_ssl_keys()
+        #             return False
+        #         else:
+        #             print("SSL/TLS keys and certificate are up to date.")
+        #             return True
+        #     else:
+        #         print("Timestamp file missing. Generating new SSL/TLS keys and certificate...")
+        #         self.generate_ssl_keys()
+        #         return False
+        # else:
+        #     print("SSL/TLS keys or certificate are missing. Generating now...")
+        #     self.generate_ssl_keys()
+        #     return False
     
 
     def attemptWifi(self):
