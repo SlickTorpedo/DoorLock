@@ -18,6 +18,20 @@ from tunnel_manager import Tunnel
 tunnel = Tunnel()
 tunnel.installAndRunDocker(tunnel.download())
 
+def tunnel_status_manager():
+    while True:
+        if not tunnel.docker_container_status():
+            print("The tunnel does not exist! Attempting to create a new one...")
+            while not tunnel.docker_container_status():
+                print("Attempting to create a new tunnel...")
+
+                if not tunnel.installAndRunDocker():
+                    print("Error: Could not create a new tunnel.")
+                    
+                time.sleep(5)
+            
+        time.sleep(60)
+
 from log import LogHandler
 
 from registrar_server import RegistrarClient

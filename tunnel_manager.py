@@ -55,8 +55,16 @@ class Tunnel:
             return 4
 
     def send_docker_ping(self):
-        #r = requests.get(self.docker_ping_url)
-        return True
+        creds = {
+            'hostname': registrar_client.get_hostname(),
+        }
+        r = requests.get(self.docker_ping_url, json=creds)
+        if r.status_code == 200:
+            print("Docker container is running!")
+            return True
+        else:
+            print("Docker container is not running!")
+            return False
 
     def docker_container_status(self):
         res = os.popen('sudo docker ps -q | wc -l')
@@ -65,16 +73,14 @@ class Tunnel:
                 print("No active tunnels!")
                 return False
             else:
-                return True
+                return self.send_docker_ping()
         except Exception as e:
             print("Something went wrong trying to find the tunnels.")
             print("Command Result: " + str(res))
             print("Error: " + str(e))
             return False
 
-        return self.send_docker_ping()
-
-    def installAndRunDocker(self, error_code=0):
+    def installAndRunDocker(self, error_code=2):
         if error_code == 0:
             if not os.path.exists(self.file_path):
                 print('ERROR: File not found')

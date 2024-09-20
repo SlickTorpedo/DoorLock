@@ -1,0 +1,11 @@
+# Ignore all .env files
+*.env
+
+# Ignore everything in the logs/ folder
+logs/*
+
+# Ignore everything in the ssl_keys/ folder
+ssl_keys/*
+
+# Ignore the docker_container.tar file
+docker_container.tar

@@ -13,6 +13,7 @@ def randomAlphaNumericString(stringLength=8):
 
 class RegistrarClient:
     def __init__(self):
+        load_dotenv()
         self.secret = os.getenv('DEVICE_SECRET')  # Never share this! It is used to authenticate the device with the registrar server
         self.default_registrar = 'https://registrar.philipehrbright.com'
         self.startup_url = 'https://registrar.philipehrbright.com/startup/'  # The PHP endpoint
