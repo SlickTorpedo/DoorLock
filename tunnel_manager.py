@@ -17,6 +17,7 @@ class Tunnel:
         }
         self.file_path = 'docker_container.tar'
         self.container_script_path = 'run_container.sh'
+        self.tunnel_url = None
 
     def download(self):
         if os.path.exists(self.file_path):
@@ -56,7 +57,7 @@ class Tunnel:
 
     def send_docker_ping(self):
         creds = {
-            'hostname': registrar_client.get_hostname(),
+            'hostname': self.tunnel_url.split("://")[1]
         }
         r = requests.post(self.docker_ping_url, json=creds)
         if r.status_code == 200:
@@ -106,6 +107,7 @@ class Tunnel:
                     print('Tunnel URL:', output['tunnel_url'])
                     print('Container ID:', output['container_id'])
                     print(registrar_client.push_tunnel(output['tunnel_url']))
+                    self.tunnel_url = output['tunnel_url']
                     print('Tunnel URL pushed to registrar')
                 else:
                     print('ERROR: Something went wrong during the execution of the container')
@@ -130,6 +132,7 @@ class Tunnel:
                     print('Tunnel URL:', output['tunnel_url'])
                     print('Container ID:', output['container_id'])
                     print(registrar_client.push_tunnel(output['tunnel_url']))
+                    self.tunnel_url = output['tunnel_url']
                     print('Tunnel URL pushed to registrar')
                 else:
                     print('ERROR: Something went wrong during the execution of the container')
