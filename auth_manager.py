@@ -146,8 +146,13 @@ class AuthManager:
     
 
     def attemptWifi(self):
-        username = ast.literal_eval(os.getenv('UA_USERNAME'))
-        password = ast.literal_eval(os.getenv('UA_PASSWORD'))
+        try:
+            username = ast.literal_eval(os.getenv('UA_USERNAME'))
+            password = ast.literal_eval(os.getenv('UA_PASSWORD'))
+        except:
+            print("Malformed username and password. Check if your .env file is setup correctly.")
+            print("Continuing with default credentials.")
+            return True
 
         try:
             subprocess.run(['sudo', 'nmcli', 'connection', 'reload'], check=True)
