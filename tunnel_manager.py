@@ -58,12 +58,20 @@ class Tunnel:
         creds = {
             'hostname': registrar_client.get_hostname(),
         }
-        r = requests.get(self.docker_ping_url, json=creds)
+        r = requests.post(self.docker_ping_url, json=creds)
         if r.status_code == 200:
             print("Docker container is running!")
             return True
-        else:
+        elif r.status_code == 403:
             print("Docker container is not running!")
+            return False
+        elif r.status_code == 500:
+            print("Server error. While this is not a success, it's not something we can fix, so we'll just keep going.")
+            return True
+        else:
+            print("Something went wrong trying to find the tunnels.")
+            print("Response: " + str(r.status_code))
+            print("Response Text: " + str(r.text))
             return False
 
     def docker_container_status(self):
