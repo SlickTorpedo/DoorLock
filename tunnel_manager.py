@@ -54,11 +54,11 @@ class Tunnel:
             return 4
 
     def installAndRunDocker(self, error_code=0):
-        if not os.path.exists(self.file_path):
-            print('ERROR: File not found')
-            return
-        
         if error_code == 0:
+            if not os.path.exists(self.file_path):
+                print('ERROR: File not found')
+                return False
+
             os.system(f'sudo chmod +x {self.file_path}')
             os.system(f'sudo chmod +x {self.container_script_path}')
             output = os.popen(f'bash ./{self.container_script_path} {self.file_path}').read()
@@ -84,7 +84,6 @@ class Tunnel:
 
         if error_code == 2:
             print('No download needed, running the container...')
-            os.system(f'sudo chmod +x {self.file_path}')
             os.system(f'sudo chmod +x {self.container_script_path}')
             output = os.popen(f'bash ./{self.container_script_path}').read()
             print("Script output: ", output)

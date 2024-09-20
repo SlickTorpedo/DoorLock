@@ -6,6 +6,9 @@ DoorLock is an innovative device designed for University of Arizona students, en
 ## Why Did I Make It?
 I created DoorLock because I find it inconvenient to carry keys everywhere, especially when they are also attached to my car keys. There’s always a risk of losing both if I misplace my keys. DoorLock addresses this issue by providing a modern, keyless solution for accessing my dorm room.
 
+## Global Access with Tunnels
+With the addition of tunnels, you can now unlock your door from anywhere in the world as long as you have an internet connection. This feature expands the convenience of DoorLock, allowing you to control access to your dorm remotely, whether you're across campus or across the globe.
+
 ## Can People Make Money Off It?
 No. DoorLock is intended for personal use only. You can build one for yourself, but selling the device is not allowed. Please refer to the license included with this project for more details.
 
