@@ -382,4 +382,5 @@ else:
 
     if __name__ == '__main__':
         #app.run(host='0.0.0.0', port=5000)
-        app.run(ssl_context=('/home/pi/Desktop/webserver/ssl_keys/cert.pem', '/home/pi/Desktop/webserver/ssl_keys/key.pem'), host='0.0.0.0', port=5000)
+        #app.run(ssl_context=('/home/pi/Desktop/webserver/ssl_keys/cert.pem', '/home/pi/Desktop/webserver/ssl_keys/key.pem'), host='0.0.0.0', port=5000)
+        app.run(port=5000)

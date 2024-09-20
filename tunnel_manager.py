@@ -18,6 +18,9 @@ class TunnelDownloader:
         self.container_script_path = 'run_container.sh'
 
     def download(self):
+        if os.path.exists(self.file_path):
+            os.remove(self.file_path)
+
         response = requests.post(self.download_url, json=self.credentials, stream=True)
         
         if response.status_code == 200:
