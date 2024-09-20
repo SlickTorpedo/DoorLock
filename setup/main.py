@@ -14,7 +14,7 @@ from auth_manager import AuthManager
 from log import LogHandler
 from version_control import VersionControl
 
-from door_controller_dev import DoorControllerDEV
+from setup.door_controller_dev import DoorControllerDEV
 
 import time
 import threading

@@ -69,3 +69,5 @@ class DoorControllerDEV:
         self.handleServo.ChangeDutyCycle(12)
         sleep(2.5)
         self.handleServo.ChangeDutyCycle(1)
+
+print("Hello world!")
