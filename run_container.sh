@@ -62,6 +62,9 @@ then
     rm "$temp_file" >/dev/null 2>&1
 fi
 
+# Stop all the running containers
+sudo docker stop $(sudo docker ps -q) >/dev/null 2>&1
+
 # Run the Docker image (tunnel-service) and capture the container ID, suppressing output
 container_id=$(sudo docker run --label app=tunnelmole --rm -d --network host tunnel-service 2>/dev/null)
 
