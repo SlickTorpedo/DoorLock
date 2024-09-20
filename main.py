@@ -5,8 +5,6 @@ import threading
 from datetime import datetime, timedelta
 import os
 
-from tunnel_manager import Tunnel
-
 from door_controller import DoorController
 from version_control import VersionControl
 from auth_manager import AuthManager
@@ -14,6 +12,11 @@ auth_manager = AuthManager()
 
 print("attempting to connect to network")
 print(auth_manager.attemptWifi())
+
+from tunnel_manager import Tunnel
+
+tunnel = Tunnel()
+tunnel.installAndRunDocker(tunnel.download())
 
 from log import LogHandler
 
@@ -65,9 +68,6 @@ if not auth_manager.setup_complete_status():
     print("File exited")
 
 else:
-    tunnel = Tunnel()
-    tunnel.installAndRunDocker(tunnel.download())
-
     door_controller = DoorController()
 
     #Ensure SSL is valid
