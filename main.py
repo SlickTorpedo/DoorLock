@@ -7,9 +7,6 @@ import os
 
 from tunnel_manager import Tunnel
 
-tunnel = Tunnel()
-print("Tunnel Status: " + str(tunnel.installAndRunDocker(tunnel.download())))
-
 from door_controller import DoorController
 from version_control import VersionControl
 from auth_manager import AuthManager
@@ -68,6 +65,9 @@ if not auth_manager.setup_complete_status():
     print("File exited")
 
 else:
+    tunnel = Tunnel()
+    tunnel.installAndRunDocker(tunnel.download())
+
     door_controller = DoorController()
 
     #Ensure SSL is valid
