@@ -59,7 +59,8 @@ class RegistrarClient:
         '''
         Returns the IP of the device
         '''
-        return os.popen('ip addr show | grep "inet " | grep -v 127.0.0.1 | cut -d " " -f 6 | cut -d "/" -f 1').read().strip()
+        res = os.popen('ip addr show | grep "inet " | grep -v 127.0.0.1 | cut -d " " -f 6 | cut -d "/" -f 1').read().strip()
+        return res.split('\n')[0]
 
     def get_serial_number(self):
         '''
@@ -152,6 +153,53 @@ class RegistrarClient:
         print(Fore.WHITE + "Device Secret: " + str(self.secret))
         print(Fore.WHITE + "IP: " + self.get_ip())
         #print(Fore.WHITE + "Registrar Output: " + self.push_to_registrar())
+
+    def push_tunnel(self, tunnel_ip):
+        ip = self.get_ip()
+        serial = self.get_serial_number()
+        registrar = self.get_active_registrar()
+
+        registrar_error_counter = 0
+        while registrar is None or "Error" in registrar:
+            if self.create_registrar_list() is not None:
+                print(Fore.RED + "Uh oh! No registrar list found, unable to push IP")
+                print(Fore.RED + "Attempting to create a default registrar list")
+            elif registrar is None:
+                print(Fore.RED + "No active registrar found. This means we checked all the registrars in the list and none of them are reachable.")
+                print(Fore.RED + "Please check with the system administrator to make sure the registrar server is up and running.")
+            else:
+                print(Fore.RED + "Error: " + registrar)
+
+            registrar_error_counter += 1
+
+            # Refresh the registrar list
+            registrar = self.get_active_registrar()
+
+            if registrar_error_counter > 3:
+                print(Fore.RED + "Error: Too many errors.")
+                return "Error: Too many errors."
+
+        print(Fore.BLUE + "Pushing IP to registrar server: " + str(registrar))
+        if not self.check_registrar_security(registrar):
+            print(Fore.RED + "Error: Registrar server is not secure.")
+            return "Error: Registrar server is not secure!"
+
+        try:
+            # Push IP to registrar
+            registrar_post = requests.post(registrar, data={'ip': ip, 'serial': serial, 'secret': self.secret, 'tunnel_ip': tunnel_ip})
+            if registrar_post.status_code == 200:
+                print(Fore.GREEN + "IP successfully pushed to registrar")
+                print(Fore.GREEN + "Registrar Response: " + registrar_post.text)
+                return "IP successfully pushed to registrar"
+            else:
+                print(Fore.RED + "Error: Unable to push IP to registrar")
+                print(Fore.YELLOW + "Registrar Response: " + registrar_post.text)
+                print(Fore.YELLOW + "Registrar Status Code: " + str(registrar_post.status_code))
+                return "Error: Unable to push IP to registrar"
+        except Exception as e:
+            print(Fore.RED + "Error: Unable to push IP to registrar")
+            return f"Error: Unable to push IP to registrar ({str(e)})"
+
 
 if __name__ == '__main__':
     client = RegistrarClient()
