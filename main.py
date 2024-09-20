@@ -339,43 +339,29 @@ else:
     @app.route('/changepassword', methods=['POST'])
     def change_password_action():
         """Changes the password for the user. This is a POST request."""
+        # Passwords are sent in plaintext, because we use HTTPS so it's encrypted
+
+        if not check_password():
+            return jsonify({'status': 'fail', 'message': 'Invalid password'}), 403
 
         try:
             data = request.json
 
-            # Extract encrypted passwords and IV from the request
-            encrypted_old_password = data.get('encryptedOldPassword')
-            encrypted_password = data.get('encryptedPassword')
-            iv_base64 = data.get('iv')
+            old_password = data.get('old_password')
+            new_password = data.get('new_password')
+            pin = data.get('pin')
 
-            pins = auth_manager.listPins() #this is a list of all the pins
-            for current_pin in pins:
-                # Convert PIN to key (ensure it's 16 bytes for AES-128)
-                key = int((current_pin + '0000000000000000')[:16])
+            current_password = auth_manager.currentPassword(pin)
+            if current_password is None:
+                return jsonify({'status': 'fail', 'message': 'Invalid PIN'}), 403
 
-                current_password = auth_manager.currentPassword(current_pin)
-
-                # Decrypt passwords
-                decrypted_old_password = auth_manager.decrypt(encrypted_old_password, key, iv_base64)
-                decrypted_new_password = auth_manager.decrypt(encrypted_password, key, iv_base64)
-
-                if 'changePASS-' in decrypted_old_password and 'changePASS-' in decrypted_new_password:
-                    # Here you should verify the old password and update to the new password
-                    if decrypted_old_password == f'changePASS-{current_password}':
-                        # Normally you would update the password in your database
-                        current_password = decrypted_new_password.replace('changePASS-', '')
-
-                        auth_manager.changePassword(current_pin, current_password)
-
-                        return jsonify({'message': 'Password changed successfully!'}), 200
-                    else:
-                        return jsonify({'error': 'Incorrect old password'}), 403
-                    
-            return jsonify({'error': 'PIN not found'}), 404
-
+            if old_password == current_password:
+                auth_manager.changePassword(pin, new_password)
+                return jsonify({'status': 'success'})
+            
+            return jsonify({'status': 'fail', 'message': 'Incorrect old password'}), 403
         except Exception as e:
-            print(f"Error: {e}")
-            return jsonify({'error': 'Internal Server Error'}), 500
+            return jsonify({'status': 'fail', 'message': str(e)}), 500
         
     # @app.route('/c')
     # def send_certificate():
