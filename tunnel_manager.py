@@ -10,6 +10,7 @@ registrar_client = RegistrarClient()
 class Tunnel:
     def __init__(self):
         self.download_url = 'https://philipehrbright.tech/download'
+        self.docker_ping_url = 'https://philipehrbright.tech/download/docker_ping'
         self.credentials = {
             'serial': registrar_client.get_serial_number(),
             'secret': registrar_client.get_secret()
@@ -52,6 +53,26 @@ class Tunnel:
             print(f'Unexpected error: {response.status_code}')
             print(f'Response: {response.text}')
             return 4
+
+    def send_docker_ping(self):
+        #r = requests.get(self.docker_ping_url)
+        return True
+
+    def docker_container_status(self):
+        res = os.popen('sudo docker ps -q | wc -l')
+        try:
+            if(int(res) < 1):
+                print("No active tunnels!")
+                return False
+            else:
+                return True
+        except Exception as e:
+            print("Something went wrong trying to find the tunnels.")
+            print("Command Result: " + str(res))
+            print("Error: " + str(e))
+            return False
+
+        return self.send_docker_ping()
 
     def installAndRunDocker(self, error_code=0):
         if error_code == 0:
