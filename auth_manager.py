@@ -108,6 +108,8 @@ class AuthManager:
 
     def cert_as_binary(self):
         #Return the cert as a binary file-like objects
+
+        #This method is no longer used. It's still here for reference and if for some reason we want to revert back to it.
         return open(self.cert_path, 'rb')
 
     def verify_ssl_keys(self):

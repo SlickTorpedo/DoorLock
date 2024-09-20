@@ -53,10 +53,10 @@ def check_password():
     cookie_password = request.cookies.get('debug-secret')
     return registrar_client.get_secret() == cookie_password
 
-@app.route('/c')
-def send_certificate():
-    """Send the certificate file to the user so they can trust it."""
-    return send_file(auth_manager.cert_as_binary(), as_attachment=True, download_name='cert.pem')
+# @app.route('/c')
+# def send_certificate():
+#     """Send the certificate file to the user so they can trust it."""
+#     return send_file(auth_manager.cert_as_binary(), as_attachment=True, download_name='cert.pem')
 
 @app.route('/')
 def setup_main():
