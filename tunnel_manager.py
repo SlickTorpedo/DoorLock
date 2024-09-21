@@ -76,7 +76,7 @@ class Tunnel:
             return False
 
     def docker_container_status(self):
-        res = os.popen('sudo docker ps -q | wc -l')
+        res = os.popen('sudo docker ps -q | wc -l').read().strip()
         try:
             if(int(res) < 1):
                 print("No active tunnels!")
