@@ -5,7 +5,7 @@ import threading
 import RPi.GPIO as GPIO 
 
 class DoorController:
-    def __init__(self, calibrate_silent=True):
+    def __init__(self):
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
 
@@ -29,7 +29,7 @@ class DoorController:
 
         self.filter_activated_cache = False
 
-        self.runCalibration(calibrate_silent)
+        self.runCalibration()
 
         self.filter_activated_counter = 0
         self.filter_activated = False
@@ -100,14 +100,10 @@ class DoorController:
         print("Average: " + str(average))
         self.calibration_average = average
 
-        if silent:
-            print("Skipping lock calibration...")
-        else:
-            print("Calibrating lock system...")
-            self.lock()
-            sleep(1)
-            self.unlock()
-            sleep(1)
+        self.lock()
+        sleep(1)
+        self.unlock()
+        sleep(1)
     
     def main_loop_single_runnable(self):
         distance = self.getDistance()
