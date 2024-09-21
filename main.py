@@ -29,10 +29,10 @@ def tunnel_status_manager():
                     print("Error: Could not create a new tunnel.")
 
                 time.sleep(5)
-            
+        print("Tunnel exists. Checking again in 60 seconds.")
         time.sleep(60)
 
-t = threading.Thread(target=tunnel_status_manager)
+threading.Thread(target=tunnel_status_manager).start()
 
 from log import LogHandler
 
