@@ -9,7 +9,7 @@ registrar_client = RegistrarClient()
 
 class Tunnel:
     def __init__(self):
-        self.download_url = 'https://philipehrbright.tech/download'
+        self.download_url = 'https://philipehrbright.tech/download/'
         self.docker_ping_url = 'https://philipehrbright.tech/download/docker_ping'
         self.credentials = {
             'serial': registrar_client.get_serial_number(),
@@ -59,6 +59,7 @@ class Tunnel:
         creds = {
             'hostname': self.tunnel_url.split("://")[1]
         }
+        print("Sending Docker Ping to " + self.docker_ping_url)
         r = requests.post(self.docker_ping_url, json=creds)
         if r.status_code == 200:
             print("Docker container is running!")

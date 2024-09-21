@@ -19,6 +19,7 @@ tunnel = Tunnel()
 tunnel.installAndRunDocker(tunnel.download())
 
 def tunnel_status_manager():
+    print("The tunnel status manager is starting.")
     while True:
         if not tunnel.docker_container_status():
             print("The tunnel does not exist! Attempting to create a new one...")
@@ -29,7 +30,7 @@ def tunnel_status_manager():
                     print("Error: Could not create a new tunnel.")
 
                 time.sleep(5)
-        print("Tunnel exists. Checking again in 60 seconds.")
+        print("Tunnel exists. Will check again in 60 seconds.")
         time.sleep(60)
 
 threading.Thread(target=tunnel_status_manager).start()
