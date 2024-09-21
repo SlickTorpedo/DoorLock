@@ -85,14 +85,7 @@ if not auth_manager.setup_complete_status():
     print("File exited")
 
 else:
-    door_controller = door_controller = DoorController()
-
-    def door_controller_main_loop():
-        while True:
-            door_controller.main_loop_single_runnable()
-            time.sleep(1)
-
-    threading.Thread(target=door_controller_main_loop).start()
+    door_controller = DoorController(False) # False to make it calibrate out loud (then the user knows it's online)
 
     def door_controller_main_loop():
         while True:
