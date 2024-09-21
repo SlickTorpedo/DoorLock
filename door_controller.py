@@ -5,7 +5,7 @@ import threading
 import RPi.GPIO as GPIO 
 
 class DoorController:
-    def __init__(self):
+    def __init__(self, calibrate_silent=True):
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
 
@@ -29,7 +29,10 @@ class DoorController:
 
         self.filter_activated_cache = False
 
-        self.runCalibration()
+        self.runCalibration(calibrate_silent)
+
+        self.filter_activated_counter = 0
+        self.filter_activated = False
 
 
     def getDistance(self):
@@ -80,7 +83,7 @@ class DoorController:
             self.lock()
         self.filter_activated_cache = False
 
-    def runCalibration(self):
+    def runCalibration(self, silent):
         calibration_values = []
         for i in range(self.calibration_count):
             calibration_values.append(self.getDistance())
@@ -97,53 +100,33 @@ class DoorController:
         print("Average: " + str(average))
         self.calibration_average = average
 
-        print("Calibrating lock system...")
-        # self.lock()
-        # sleep(1)
-        # self.unlock()
-        # sleep(1)
-
-
-    def main_loop(self):
-        #This method has issues with the distance sensor, it is not reliable
-        #If the door randomly stops locking behind you, this is the issue
-        #I am working on a fix for this issue, it's just really hard to reproduce
-
-        print("Starting main loop")
-        for x in range(10):
-            print("Starting distance listener in " + str(10 - x) + " seconds")
+        if silent:
+            print("Skipping lock calibration...")
+        else:
+            print("Calibrating lock system...")
+            self.lock()
             sleep(1)
-        filter_activated_counter = 0
-        filter_activated = False
-
-        distance_print_counter = 0
-        while True:
-            try:
-                distance = self.getDistance()
-
-                distance_print_counter += 1
-                if distance_print_counter >= 10:
-                    distance_print_counter = 0
-                    print("Distance: " + str(distance), flush=True) #Runs every second, outputs every 10 seconds
-
-                if distance > self.calibration_average + 5 or distance < self.calibration_average - 5:
-                    print("Activated filter")
-                    filter_activated = True
-                    filter_activated_counter = 0
-                    self.filter_activated_cache = True
-                else:
-                    filter_activated_counter += 1
-                    if filter_activated_counter >= 5 and filter_activated:
-                        print("Deactivated filter")
-                        filter_activated = False
-                        self.filter_activated_cache = False
-                        filter_activated_counter = 0
-                        sleep(5)
-                        self.lock()
-                sleep(1)
-            except Exception as e:
-                print("Error in DoorController main loop: " + str(e))
-                sleep(1)
+            self.unlock()
+            sleep(1)
+    
+    def main_loop_single_runnable(self):
+        distance = self.getDistance()
+        if distance > self.calibration_average + 5 or distance < self.calibration_average - 5:
+            print("Activated filter", flush=True)
+            self.filter_activated = True
+            self.filter_activated_counter = 0
+            self.filter_activated_cache = True
+        else:
+            self.filter_activated_counter += 1
+            if self.filter_activated_counter >= 5 and self.filter_activated:
+                print("Deactivated filter", flush=True)
+                self.filter_activated = False
+                self.filter_activated_cache = False
+                self.filter_activated_counter = 0
+                sleep(5)
+                self.lock()
+            
+        return True
 
     def setLockAngle(self, angle): #This is for DEBUG!
         self.lockingServo.ChangeDutyCycle(angle)

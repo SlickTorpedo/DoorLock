@@ -85,10 +85,21 @@ if not auth_manager.setup_complete_status():
     print("File exited")
 
 else:
-    door_controller = DoorController()
+    door_controller = door_controller = DoorController()
 
-    main_loop_door_controller = threading.Thread(target=door_controller.main_loop, daemon=True)
-    main_loop_door_controller.start()
+    def door_controller_main_loop():
+        while True:
+            door_controller.main_loop_single_runnable()
+            time.sleep(1)
+
+    threading.Thread(target=door_controller_main_loop).start()
+
+    def door_controller_main_loop():
+        while True:
+            door_controller.main_loop_single_runnable()
+            time.sleep(1)
+
+    threading.Thread(target=door_controller_main_loop).start()
 
     #Ensure SSL is valid
     auth_counter = 0
