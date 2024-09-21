@@ -105,6 +105,10 @@ class DoorController:
 
 
     def main_loop(self):
+        #This method has issues with the distance sensor, it is not reliable
+        #If the door randomly stops locking behind you, this is the issue
+        #I am working on a fix for this issue, it's just really hard to reproduce
+
         print("Starting main loop")
         for x in range(10):
             print("Starting distance listener in " + str(10 - x) + " seconds")
