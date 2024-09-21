@@ -83,7 +83,7 @@ class DoorController:
             self.lock()
         self.filter_activated_cache = False
 
-    def runCalibration(self, silent):
+    def runCalibration(self):
         calibration_values = []
         for i in range(self.calibration_count):
             calibration_values.append(self.getDistance())
