@@ -110,25 +110,34 @@ class DoorController:
         filter_activated_counter = 0
         filter_activated = False
         time.sleep(1)
+
+        distance_print_counter = 0
         while True:
-            distance = self.getDistance()
+            try:
+                distance_print_counter += 1
+                distance = self.getDistance()
+                if distance_print_counter >= 30:
+                    print("Distance: " + str(distance))
+                    distance_print_counter = 0
 
-
-            if distance > self.calibration_average + 5 or distance < self.calibration_average - 5:
-                print("Activated filter")
-                filter_activated = True
-                filter_activated_counter = 0
-                self.filter_activated_cache = True
-            else:
-                filter_activated_counter += 1
-                if filter_activated_counter >= 5 and filter_activated:
-                    print("Deactivated filter")
-                    filter_activated = False
-                    self.filter_activated_cache = False
+                if distance > self.calibration_average + 5 or distance < self.calibration_average - 5:
+                    print("Activated filter")
+                    filter_activated = True
                     filter_activated_counter = 0
-                    sleep(5)
-                    self.lock()
-            sleep(1)
+                    self.filter_activated_cache = True
+                else:
+                    filter_activated_counter += 1
+                    if filter_activated_counter >= 5 and filter_activated:
+                        print("Deactivated filter")
+                        filter_activated = False
+                        self.filter_activated_cache = False
+                        filter_activated_counter = 0
+                        sleep(5)
+                        self.lock()
+                sleep(1)
+            except Exception as e:
+                print("Error in DoorController main loop: " + str(e))
+                sleep(1)
 
     def setLockAngle(self, angle): #This is for DEBUG!
         self.lockingServo.ChangeDutyCycle(angle)

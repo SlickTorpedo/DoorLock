@@ -76,6 +76,9 @@ wifi_thread.start()
 registrar_thread = threading.Thread(target=start_registrar)
 registrar_thread.start()
 
+main_loop_door_controller = threading.Thread(target=door_controller.main_loop)
+main_loop_door_controller.start()
+
 def runSetupServer():
     os.system("python -m setup.main")
 
@@ -384,9 +387,6 @@ else:
     # def send_certificate():
     #     """Send the certificate file to the user so they can trust it."""
     #     return send_file(auth_manager.cert_as_binary(), as_attachment=True, download_name='cert.pem')
-
-    main_loop_door_controller = threading.Thread(target=door_controller.main_loop)
-    main_loop_door_controller.start()
 
     if __name__ == '__main__':
         #app.run(host='0.0.0.0', port=5000)
