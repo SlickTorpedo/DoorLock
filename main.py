@@ -27,10 +27,12 @@ def tunnel_status_manager():
 
                 if not tunnel.installAndRunDocker():
                     print("Error: Could not create a new tunnel.")
-                    
+
                 time.sleep(5)
             
         time.sleep(60)
+
+t = threading.Thread(target=tunnel_status_manager)
 
 from log import LogHandler
 
