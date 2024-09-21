@@ -76,9 +76,6 @@ wifi_thread.start()
 registrar_thread = threading.Thread(target=start_registrar)
 registrar_thread.start()
 
-main_loop_door_controller = threading.Thread(target=door_controller.main_loop)
-main_loop_door_controller.start()
-
 def runSetupServer():
     os.system("python -m setup.main")
 
@@ -89,6 +86,9 @@ if not auth_manager.setup_complete_status():
 
 else:
     door_controller = DoorController()
+
+    main_loop_door_controller = threading.Thread(target=door_controller.main_loop, daemon=True)
+    main_loop_door_controller.start()
 
     #Ensure SSL is valid
     auth_counter = 0

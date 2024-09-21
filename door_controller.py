@@ -98,27 +98,29 @@ class DoorController:
         self.calibration_average = average
 
         print("Calibrating lock system...")
-        self.lock()
-        sleep(1)
-        self.unlock()
-        sleep(1)
+        # self.lock()
+        # sleep(1)
+        # self.unlock()
+        # sleep(1)
 
 
     def main_loop(self):
         print("Starting main loop")
-        time.sleep(1)
+        for x in range(10):
+            print("Starting distance listener in " + str(10 - x) + " seconds")
+            sleep(1)
         filter_activated_counter = 0
         filter_activated = False
-        time.sleep(1)
 
         distance_print_counter = 0
         while True:
             try:
-                distance_print_counter += 1
                 distance = self.getDistance()
-                if distance_print_counter >= 30:
-                    print("Distance: " + str(distance))
+
+                distance_print_counter += 1
+                if distance_print_counter >= 10:
                     distance_print_counter = 0
+                    print("Distance: " + str(distance), flush=True) #Runs every second, outputs every 10 seconds
 
                 if distance > self.calibration_average + 5 or distance < self.calibration_average - 5:
                     print("Activated filter")
