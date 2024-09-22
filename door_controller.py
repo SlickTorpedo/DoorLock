@@ -34,26 +34,43 @@ class DoorController:
         self.filter_activated_counter = 0
         self.filter_activated = False
 
+        self.last_distance = 0
+
 
     def getDistance(self):
+        # Send trigger signal
         GPIO.output(self.ULT_TRIGGER, True)
-    
+        
         time.sleep(0.00001)
         GPIO.output(self.ULT_TRIGGER, False)
-    
+        
         StartTime = time.time()
         StopTime = time.time()
-    
+
+        # Timeout logic
+        timeout_limit = 1  # 1 second timeout
+
+        # Wait for the echo to go high (start of signal)
+        start_wait_time = time.time()
         while GPIO.input(self.ULT_ECHO) == 0:
             StartTime = time.time()
-    
+            if time.time() - start_wait_time > timeout_limit:
+                return self.last_distance
+
+        # Wait for the echo to go low (end of signal)
+        stop_wait_time = time.time()
         while GPIO.input(self.ULT_ECHO) == 1:
             StopTime = time.time()
-    
+            if time.time() - stop_wait_time > timeout_limit:
+                return self.last_distance
+
+        # Calculate time elapsed and distance
         TimeElapsed = StopTime - StartTime
         distance = (TimeElapsed * 34300) / 2
- 
+
+        self.last_distance = distance
         return distance
+
 
     def lock(self):
         self.lockingServo.ChangeDutyCycle(1)
