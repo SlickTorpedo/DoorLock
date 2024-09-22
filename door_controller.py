@@ -55,6 +55,7 @@ class DoorController:
         while GPIO.input(self.ULT_ECHO) == 0:
             StartTime = time.time()
             if time.time() - start_wait_time > timeout_limit:
+                print("Timeout reached. Returning last distance", flush=True)
                 return self.last_distance
 
         # Wait for the echo to go low (end of signal)
@@ -62,6 +63,7 @@ class DoorController:
         while GPIO.input(self.ULT_ECHO) == 1:
             StopTime = time.time()
             if time.time() - stop_wait_time > timeout_limit:
+                print("Timeout reached. Returning last distance", flush=True)
                 return self.last_distance
 
         # Calculate time elapsed and distance
