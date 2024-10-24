@@ -5,12 +5,13 @@ import threading
 from datetime import datetime, timedelta
 import os
 
+from light_controller_hook import LightControllerHook
 from door_controller import DoorController
 from version_control import VersionControl
 from auth_manager import AuthManager
 auth_manager = AuthManager()
 
-print("attempting to connect to network")
+print("Attempting to connect to network")
 print(auth_manager.attemptWifi())
 
 from tunnel_manager import Tunnel
@@ -105,8 +106,16 @@ else:
 
     print("SSL keys verified (main).")
 
+    print("Attempting to hook into light controller.")
+    light_controller_hook = LightControllerHook()
+    if(light_controller_hook._is_enabled()):
+        print("Connected to lights.")
+    else:
+        print("[INFO] Light controller is disabled. Skipping connection.")
+
     def unlockDoor():
         door_controller.unlock()
+        light_controller_hook.turn_on() #This will do nothing if the light controller is disabled
         return
 
     def lockDoor():
