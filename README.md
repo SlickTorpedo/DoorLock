@@ -22,7 +22,7 @@ It was going to, but I sold a few of them to people through word of mouth and no
 DoorLock is available in a variety of colors. For a complete list of options, please visit the website.
 
 ## Can I Make One Myself?
-Absolutely! You are encouraged to build DoorLock for personal use. However, selling the device is prohibited.
+Absolutely! You are encouraged to build DoorLock for personal use. However, selling the device is prohibited. If you're going to make one, you may also want to host your own backend, in that case, you can find it [here](https://github.com/SlickTorpedo/DoorLock-Server)
 
 ## How Much Is It?
 The cost of DoorLock is $70. If you and a roommate choose to share, the cost would be $35 each.
