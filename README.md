@@ -16,7 +16,7 @@ No. DoorLock is intended for personal use only. You can build one for yourself, 
 The design and prototyping of DoorLock took approximately 2 weeks. This period included planning, development, and extensive testing to ensure the device works reliably.
 
 ## Does It Have a Website?
-Yes, more information about DoorLock can be found on its official website: [doorlock.philipehrbright.com](http://doorlock.philipehrbright.com)
+It was going to, but I sold a few of them to people through word of mouth and no longer want to continue making them as it was very time consuming so they are only available upon request.
 
 ## What Colors Does It Come In?
 DoorLock is available in a variety of colors. For a complete list of options, please visit the website.
