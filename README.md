@@ -38,3 +38,30 @@ Feel free to reach out if you have any questions or need further information. En
 
 ### Light Controller
 [Light Controller](https://github.com/SlickTorpedo/LightController) is something else I built for my dorm that allows me to turn on my lights using my voice because they are so far from my bed. It's not for sale, but if you wanted to print and assemble your own, the 3d model files and code are [here](https://github.com/SlickTorpedo/LightController).
+
+## 3d Files, Photos, and Videos
+### 3d Files
+All the 3d files can be found [here](https://github.com/SlickTorpedo/DoorLock-Model)
+
+### Photos
+#### 3d Renders
+<img width="275" height="325" alt="image" src="https://github.com/user-attachments/assets/32d1edd3-761e-460d-93b7-979804a4b51c">
+<img width="275" height="325" alt="image" src="https://github.com/user-attachments/assets/c58e35e0-d421-4c24-831e-9b9b0b58e54c">
+
+#### Requesting Time
+<img width="300" height="500" alt="image" src="https://github.com/user-attachments/assets/ddd0314d-1317-4e04-bdce-dcd3991023fa">
+<img width="300" height="500" alt="image" src="https://github.com/user-attachments/assets/843bb52b-1dfa-4bd3-b603-c97618ace9e5">
+<img width="300" height="500" alt="image" src="https://github.com/user-attachments/assets/d1864f52-3045-48a2-a62e-41c00d516b0c">
+
+### Videos
+#### Unlocking with iPhone (or any web enabled device)
+https://github.com/user-attachments/assets/ba3596d2-127b-4845-be6e-6ef04063370d
+
+#### Unlocking with Apple Watch
+https://github.com/user-attachments/assets/bfbd603a-3d6d-43f4-9f12-d5c81d42b69a
+
+#### Automatic Re-locking Using Ultrasonic Sensor
+https://github.com/user-attachments/assets/b6448ca8-28a4-4984-88d7-aedcc326468b
+
+
+
