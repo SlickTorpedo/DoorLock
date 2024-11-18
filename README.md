@@ -1,7 +1,7 @@
 # DoorLock
 
 ## What is it?
-DoorLock is an innovative device designed for University of Arizona students, enabling you to unlock your dorm room using your phone or any device connected to U of A’s WiFi. This smart solution eliminates the need for traditional keys and allows for convenient access from anywhere. You can even unlock the door for friends remotely or use voice commands with Siri if your hands are full.
+DoorLock is an innovative device designed for University of Arizona students, enabling you to unlock your dorm room using your phone or any device connected to the internet. This smart solution eliminates the need for traditional keys and allows for convenient access from anywhere. You can even unlock the door for friends remotely or use voice commands with Siri if your hands are full.
 
 ## Why Did I Make It?
 I created DoorLock because I find it inconvenient to carry keys everywhere, especially when they are also attached to my car keys. There’s always a risk of losing both if I misplace my keys. DoorLock addresses this issue by providing a modern, keyless solution for accessing my dorm room.
@@ -22,7 +22,7 @@ It was going to, but I sold a few of them to people through word of mouth and no
 DoorLock is available in a variety of colors. For a complete list of options, please visit the website.
 
 ## Can I Make One Myself?
-Absolutely! You are encouraged to build DoorLock for personal use. However, selling the device is prohibited. If you're going to make one, you may also want to host your own backend, in that case, you can find it [here](https://github.com/SlickTorpedo/DoorLock-Server)
+Absolutely! You are encouraged to build DoorLock for personal use. However, selling the device is prohibited. If you're going to make one, you may also want to host your own backend, in that case, you can find it [here](https://github.com/SlickTorpedo/DoorLock-Server).
 
 ## How Much Is It?
 The cost of DoorLock is $70. If you and a roommate choose to share, the cost would be $35 each.
@@ -35,3 +35,6 @@ You can now request "privacy time" or "quiet time" with DoorLock. When you set a
 If you set "quiet time," a warning will be displayed when someone tries to enter your room, reminding them to please be quiet to avoid disturbing you.
 
 Feel free to reach out if you have any questions or need further information. Enjoy the convenience and flexibility of DoorLock!
+
+### Light Controller
+[Light Controller](https://github.com/SlickTorpedo/LightController) is something else I built for my dorm that allows me to turn on my lights using my voice because they are so far from my bed. It's not for sale, but if you wanted to print and assemble your own, the 3d model files and code are [here](https://github.com/SlickTorpedo/LightController).
