@@ -27,6 +27,7 @@ class Tunnel:
             response = requests.post(self.download_url, json=self.credentials, stream=True)
         except requests.exceptions.RequestException as e:
             print(f'ERROR WITH DOCKER DOWNLOAD: {e}')
+            print("This isn't a huge issue as long as there's no update to the tunnel software (which there never is).")
             return 4
         
         if response.status_code == 200:
@@ -68,6 +69,7 @@ class Tunnel:
             r = requests.post(self.docker_ping_url, json=creds)
         except requests.exceptions.RequestException as e:
             print(f'ERROR WITH DOCKER PING: {e}')
+            print("This is okay, the device automatically falls back to a CF Tunnel!")
             return False
         if r.status_code == 200:
             print("Docker container is running!")
