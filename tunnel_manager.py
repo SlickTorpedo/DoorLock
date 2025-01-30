@@ -88,6 +88,9 @@ class Tunnel:
             return False
 
     def docker_container_status(self):
+        #Check if it's using a CF tunnel, if so, return True
+        if self.tunnel_url == self.cf_tunnel_url:
+            return True #It's using a CF tunnel so it's fine, it will check again in 5 minutes
         res = os.popen('sudo docker ps -q | wc -l').read().strip()
         try:
             if(int(res) < 1):
