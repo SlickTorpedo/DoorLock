@@ -15,6 +15,7 @@ class Tunnel:
             'serial': registrar_client.get_serial_number(),
             'secret': registrar_client.get_secret()
         }
+        self.cf_tunnel_url = 'https://doorlock-cf-' + self.credentials['serial'] + '.philipehrbright.tech/'
         self.file_path = 'docker_container.tar'
         self.container_script_path = 'run_container.sh'
         self.tunnel_url = None
@@ -124,6 +125,10 @@ class Tunnel:
                     print('ERROR: Something went wrong during the execution of the container')
                     print("This isn't the best, but it's not the end of the world. The device will try again in 5 minutes.")
                     print("In the meantime it will use a Cloudflare tunnel as a backup.")
+                    # Post the Tunnel URL instead which is self.cf_tunnel_url
+                    print(registrar_client.push_tunnel(self.cf_tunnel_url))
+                    self.tunnel_url = self.cf_tunnel_url
+                    print("Tunnel URL pushed to registrar [CF TUNNEL]")
             except Exception as e:
                 print('ERROR: Could not parse the output ', str(e))
             return output
@@ -149,6 +154,12 @@ class Tunnel:
                     print('Tunnel URL pushed to registrar')
                 else:
                     print('ERROR: Something went wrong during the execution of the container')
+                    print("This isn't the best, but it's not the end of the world. The device will try again in 5 minutes.")
+                    print("In the meantime it will use a Cloudflare tunnel as a backup.")
+                    # Post the Tunnel URL instead which is self.cf_tunnel_url
+                    print(registrar_client.push_tunnel(self.cf_tunnel_url))
+                    self.tunnel_url = self.cf_tunnel_url
+                    print("Tunnel URL pushed to registrar [CF TUNNEL]")
             except Exception as e:
                 print('ERROR: Could not parse the output ', str(e))
             return output
