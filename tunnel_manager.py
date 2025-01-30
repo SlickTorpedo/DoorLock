@@ -122,6 +122,8 @@ class Tunnel:
                     print('Tunnel URL pushed to registrar')
                 else:
                     print('ERROR: Something went wrong during the execution of the container')
+                    print("This isn't the best, but it's not the end of the world. The device will try again in 5 minutes.")
+                    print("In the meantime it will use a Cloudflare tunnel as a backup.")
             except Exception as e:
                 print('ERROR: Could not parse the output ', str(e))
             return output
