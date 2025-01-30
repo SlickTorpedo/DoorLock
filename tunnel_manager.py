@@ -126,7 +126,7 @@ class Tunnel:
                     print("This isn't the best, but it's not the end of the world. The device will try again in 5 minutes.")
                     print("In the meantime it will use a Cloudflare tunnel as a backup.")
                     # Post the Tunnel URL instead which is self.cf_tunnel_url
-                    print(registrar_client.push_tunnel(self.cf_tunnel_url))
+                    print("RESULT FROM CF TUNNEL PUSH (1): ", registrar_client.push_tunnel(self.cf_tunnel_url))
                     self.tunnel_url = self.cf_tunnel_url
                     print("Tunnel URL pushed to registrar [CF TUNNEL]")
             except Exception as e:
@@ -157,7 +157,7 @@ class Tunnel:
                     print("This isn't the best, but it's not the end of the world. The device will try again in 5 minutes.")
                     print("In the meantime it will use a Cloudflare tunnel as a backup.")
                     # Post the Tunnel URL instead which is self.cf_tunnel_url
-                    print(registrar_client.push_tunnel(self.cf_tunnel_url))
+                    print("RESULT FROM CF TUNNEL PUSH (2): " + registrar_client.push_tunnel(self.cf_tunnel_url))
                     self.tunnel_url = self.cf_tunnel_url
                     print("Tunnel URL pushed to registrar [CF TUNNEL]")
             except Exception as e:
