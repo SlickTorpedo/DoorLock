@@ -23,7 +23,11 @@ class Tunnel:
         if os.path.exists(self.file_path):
             os.remove(self.file_path)
 
-        response = requests.post(self.download_url, json=self.credentials, stream=True)
+        try:
+            response = requests.post(self.download_url, json=self.credentials, stream=True)
+        except requests.exceptions.RequestException as e:
+            print(f'ERROR WITH DOCKER DOWNLOAD: {e}')
+            return 4
         
         if response.status_code == 200:
             total_size_in_bytes = int(response.headers.get('content-length', 0))
@@ -60,7 +64,11 @@ class Tunnel:
             'hostname': self.tunnel_url.split("://")[1]
         }
         print("Sending Docker Ping to " + self.docker_ping_url)
-        r = requests.post(self.docker_ping_url, json=creds)
+        try:
+            r = requests.post(self.docker_ping_url, json=creds)
+        except requests.exceptions.RequestException as e:
+            print(f'ERROR WITH DOCKER PING: {e}')
+            return False
         if r.status_code == 200:
             print("Docker container is running!")
             return True
