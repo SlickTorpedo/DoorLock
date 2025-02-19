@@ -20,6 +20,11 @@ class Tunnel:
         self.container_script_path = 'run_container.sh'
         self.tunnel_url = None
 
+    def get_tunnel_url(self):
+        if self.tunnel_url is None:
+            return self.cf_tunnel_url
+        return self.tunnel_url
+
     def download(self):
         if os.path.exists(self.file_path):
             os.remove(self.file_path)

@@ -9,6 +9,7 @@ from light_controller_hook import LightControllerHook
 from door_controller import DoorController
 from version_control import VersionControl
 from auth_manager import AuthManager
+from lockout import Lockout
 auth_manager = AuthManager()
 
 print("Attempting to connect to network")
@@ -18,6 +19,8 @@ from tunnel_manager import Tunnel
 
 tunnel = Tunnel()
 tunnel.installAndRunDocker(tunnel.download())
+
+lockout_manager = Lockout(auth_manager.get_device_url())
 
 def tunnel_status_manager():
     print("The tunnel status manager is starting.")
@@ -62,17 +65,6 @@ def start_registrar():
         print("Task: Pushing IP to registrar server")
         print(registrar.push_to_registrar())
         time.sleep(3600)
-    
-def check_wifi_status():
-    while True:
-        if not auth_manager.check_wifi_connection():
-            print("Error: No WiFi connection")
-            log_handler.log("Error: No WiFi connection")
-            version_control.restartDevice()
-        time.sleep(60)
-
-wifi_thread = threading.Thread(target=check_wifi_status)
-wifi_thread.start()
 
 registrar_thread = threading.Thread(target=start_registrar)
 registrar_thread.start()
@@ -86,6 +78,28 @@ if not auth_manager.setup_complete_status():
     print("File exited")
 
 else:
+
+    def health_monitor():
+        print("[INFO] Health monitor started")
+        log_handler.log_message("Health monitor started")
+        while True:
+            if(lockout_manager.check_lockout()):
+                log_handler.log_message("Lockout detected. The device was unable to ping itself.")
+                log_handler.log_message("This may be due to a network issue or a problem with the device.")
+                log_handler.log_message("Attempting to check wifi connection.")
+                if not auth_manager.check_wifi_connection():
+                    log_handler.log_message("Error: No WiFi connection... Restarting device.")
+                    version_control.restartDevice()
+                else:
+                    log_handler.log_message("WiFi connection is good.")
+                    log_handler.log_message("This indicates an issue with the device. The device will now restart itself.")
+                    version_control.restartDevice()
+            time.sleep(60)
+
+    wifi_thread = threading.Thread(target=health_monitor)
+    wifi_thread.start()
+
+
     door_controller = DoorController()
 
     def door_controller_main_loop():
@@ -395,6 +409,11 @@ else:
             return jsonify({'status': 'fail', 'message': 'Incorrect old password'}), 403
         except Exception as e:
             return jsonify({'status': 'fail', 'message': str(e)}), 500
+        
+    @app.route('/lockoutping', methods=['GET'])
+    def lockout_ping():
+        """This is essentially a status page to check if the device is reachable."""
+        return jsonify({'status': 'success'})
         
     # @app.route('/c')
     # def send_certificate():
